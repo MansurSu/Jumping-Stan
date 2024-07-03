@@ -11,6 +11,7 @@ namespace TheGameGame
         
         private Texture2D texture;
         private Rectangle deelRectangle;
+        private int schuifOp_x = 0;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -20,7 +21,7 @@ namespace TheGameGame
 
         protected override void Initialize()
         {
-            deelRectangle = new Rectangle(0, 0, 300, 300);
+            deelRectangle = new Rectangle(schuifOp_x, 300, 300, 300);
 
             base.Initialize();
         }
