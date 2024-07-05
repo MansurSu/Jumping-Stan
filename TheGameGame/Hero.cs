@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using TheGameGame.interfaces;
 using TheGameGame.Animation;
 using TheGameGame.Input;
+using System.Diagnostics;
 
 namespace TheGameGame
 {
@@ -11,6 +12,7 @@ namespace TheGameGame
         Texture2D heroTexture;
         Animatie runAnimatie;
         Animatie idleAnimatie;
+        Animatie jumpAnimatie;
         Animatie currentAnimatie;
         private Vector2 positie;
         IInputReader inputReader;
@@ -18,6 +20,8 @@ namespace TheGameGame
         public Hero(Texture2D texture, IInputReader reader)
         {
             heroTexture = texture;
+            jumpAnimatie = new Animatie();
+            jumpAnimatie.AddFrame(new AnimationFrame(new Rectangle(900, 0, 300, 300)));
             idleAnimatie = new Animatie();
             idleAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 0, 300, 300)));
             runAnimatie = new Animatie();
@@ -33,16 +37,20 @@ namespace TheGameGame
             var direction = inputReader.ReadInput();
             direction *= 6;
             positie += direction;
-
+            Debug.WriteLine(direction);
             // Update animation
             runAnimatie.Update(gameTime);
-            if(direction.ToString() == "<0. 0>")
+            if(direction == Vector2.Zero)
             {
                 currentAnimatie = idleAnimatie;
             }
-            else
+            else if(direction.Y == 0)
             {
                 currentAnimatie = runAnimatie;
+            }
+            else
+            {
+                currentAnimatie = jumpAnimatie;
             }
 
             // Check boundaries and keep the hero within bounds
