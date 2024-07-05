@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace TheGameGame
 {
@@ -10,8 +11,8 @@ namespace TheGameGame
         private SpriteBatch _spriteBatch;
         
         private Texture2D texture;
-        private Rectangle deelRectangle;
-        private int schuifOp_x = 0;
+        Hero hero;
+        
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -21,7 +22,7 @@ namespace TheGameGame
 
         protected override void Initialize()
         {
-            deelRectangle = new Rectangle(schuifOp_x, 300, 300, 300);
+            
 
             base.Initialize();
         }
@@ -31,12 +32,20 @@ namespace TheGameGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             texture = Content.Load<Texture2D>("SpriteSheet");
 
+            InitializeGameObject();
+        }
+
+        private void InitializeGameObject()
+        {
+            hero = new Hero(texture);
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            hero.Update();
 
             base.Update(gameTime);
         }
@@ -46,11 +55,14 @@ namespace TheGameGame
             GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
-
+            hero.Draw(_spriteBatch);
             // Draw the entire texture
-            _spriteBatch.Draw(texture, new Vector2(10, 10), deelRectangle, Color.White);
+            
 
             _spriteBatch.End();
+
+            
+
 
             base.Draw(gameTime);
         }
