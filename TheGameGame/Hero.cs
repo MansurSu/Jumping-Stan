@@ -1,45 +1,30 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TheGameGame.interfaces;
 using TheGameGame.Animation;
-using SharpDX.MediaFoundation;
-using System.Diagnostics;
-using SharpDX.DXGI;
-using Microsoft.Xna.Framework.Input;
 using TheGameGame.Input;
-
 
 namespace TheGameGame
 {
-    public class Hero:IGameObject
+    public class Hero : IGameObject
     {
-
         Texture2D heroTexture;
-        Animatie animatie;
+        Animatie runAnimatie;
+        Animatie idleAnimatie;
+        Animatie currentAnimatie;
         private Vector2 positie;
-        private Vector2 snelheid;
-        private Vector2 versnelling;
-        private Vector2 mouseVector;
         IInputReader inputReader;
 
         public Hero(Texture2D texture, IInputReader reader)
         {
             heroTexture = texture;
-            animatie = new Animatie();
-            animatie.AddFrame(new AnimationFrame(new Rectangle(0,300,300,300)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
+            idleAnimatie = new Animatie();
+            idleAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 0, 300, 300)));
+            runAnimatie = new Animatie();
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 300, 300, 300)));
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
             positie = new Vector2(10, 10);
-            snelheid = new Vector2(1, 1);
-            versnelling = new Vector2(0.1f, 0.1f);
-
-
-            //input lezen voor hero klasse
             this.inputReader = reader;
         }
 
@@ -49,57 +34,27 @@ namespace TheGameGame
             direction *= 6;
             positie += direction;
 
-            
-            //Move(GetMouseState());
-            animatie.Update(gameTime);
-        }
-
-        private Vector2 GetMouseState()
-        {
-            MouseState state = Mouse.GetState();
-            mouseVector = new Vector2(state.X, state.Y);
-            return mouseVector;
-
-        }
-
-        private void Move(Vector2 mouse)
-        {
-            var direction = Vector2.Add(mouse, -positie);
-            direction.Normalize();
-            direction = Vector2.Multiply(direction, 0.5f);
-            snelheid += direction;
-            snelheid = Limit(snelheid, 15);
-            positie += snelheid;
-
-            if (positie.X >600 || positie.X < 0)
+            // Update animation
+            runAnimatie.Update(gameTime);
+            if(direction.ToString() == "<0. 0>")
             {
-                snelheid.X *= -1;
-                versnelling.X *= -1;
+                currentAnimatie = idleAnimatie;
             }
-            if (positie.Y > 600 || positie.Y < 0)
+            else
             {
-                snelheid.Y *= -1;
-                versnelling.Y *= -1;
+                currentAnimatie = runAnimatie;
             }
 
-        }
-
-        private Vector2 Limit(Vector2 v, float max)
-        {
-            if(v.Length() > max)
-            {
-                var ratio = max / v.Length();
-                v.X *= ratio;
-                v.Y *= ratio;
-            }
-            return v;
+            // Check boundaries and keep the hero within bounds
+            if (positie.X > 600) positie.X = 600;
+            if (positie.X < 0) positie.X = 0;
+            if (positie.Y > 600) positie.Y = 600;
+            if (positie.Y < 0) positie.Y = 0;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(heroTexture, positie, animatie.CurrentFrame.SourceRectangle,Color.White,0, new Vector2(0,0),0.5f, SpriteEffects.None,0);
+            spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
         }
-
-       
     }
 }
