@@ -21,14 +21,14 @@ namespace TheGameGame
             heroTexture = texture;
             animatie = new Animatie();
             animatie.AddFrame(new AnimationFrame(new Rectangle(0,300,300,300)));
+            animatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
             animatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(900, 300, 300, 300)));
             
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            animatie.Update();
+            animatie.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
