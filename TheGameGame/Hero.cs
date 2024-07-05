@@ -11,6 +11,7 @@ using SharpDX.MediaFoundation;
 using System.Diagnostics;
 using SharpDX.DXGI;
 using Microsoft.Xna.Framework.Input;
+using TheGameGame.Input;
 
 
 namespace TheGameGame
@@ -24,7 +25,9 @@ namespace TheGameGame
         private Vector2 snelheid;
         private Vector2 versnelling;
         private Vector2 mouseVector;
-        public Hero(Texture2D texture)
+        IInputReader inputReader;
+
+        public Hero(Texture2D texture, IInputReader reader)
         {
             heroTexture = texture;
             animatie = new Animatie();
@@ -34,12 +37,20 @@ namespace TheGameGame
             positie = new Vector2(10, 10);
             snelheid = new Vector2(1, 1);
             versnelling = new Vector2(0.1f, 0.1f);
+
+
+            //input lezen voor hero klasse
+            this.inputReader = reader;
         }
 
         public void Update(GameTime gameTime)
         {
+            var direction = inputReader.ReadInput();
+            direction *= 6;
+            positie += direction;
+
             
-            Move(GetMouseState());
+            //Move(GetMouseState());
             animatie.Update(gameTime);
         }
 

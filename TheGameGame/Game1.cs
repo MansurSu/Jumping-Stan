@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using TheGameGame.Input;
 
 namespace TheGameGame
 {
@@ -37,7 +38,7 @@ namespace TheGameGame
 
         private void InitializeGameObject()
         {
-            hero = new Hero(texture);
+            hero = new Hero(texture, new KeyBoardreader());
         }
 
         protected override void Update(GameTime gameTime)
