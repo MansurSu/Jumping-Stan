@@ -108,7 +108,14 @@ namespace TheGameGame
             // Determine the sprite effects based on the facing direction
             SpriteEffects spriteEffects = facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 0.5f, spriteEffects, 0);
+            // Specify the scale factor
+            float scale = 0.3f;
+
+            // Calculate the origin to maintain the position
+            Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
+
+            spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);
         }
+
     }
 }
