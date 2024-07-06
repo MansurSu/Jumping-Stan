@@ -19,16 +19,15 @@ namespace TheGameGame
         private int tilemapWidthInTiles = 8; // Number of tiles in the tilemap width
         private int tilemapHeightInTiles = 8; // Number of tiles in the tilemap height
 
-
         private int[,] gameboard = new int[,]
         {
-            { 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 0, 0, 1, 1, 0, 1, 1, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 1 },
-            { 1, 1, 1, 1, 1, 1, 0, 1 },
-            { 1, 0, 0, 0, 0, 0, 0, 2 },
-            { 1, 0, 1, 1, 1, 1, 1, 2 },
-            { 1, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 1, 1, 1, 1, 1, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 1 },
+            { 0, 0, 1, 0, 1, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1 }
         };
 
@@ -39,6 +38,10 @@ namespace TheGameGame
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            // Set the resolution of the game window
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 480;
         }
 
         protected override void Initialize()
@@ -78,6 +81,13 @@ namespace TheGameGame
 
             _spriteBatch.Begin();
 
+            // Calculate tile dimensions to fill the screen
+            int screenWidth = _graphics.PreferredBackBufferWidth;
+            int screenHeight = _graphics.PreferredBackBufferHeight;
+
+            int tileWidth = screenWidth / tilemapWidthInTiles;
+            int tileHeight = screenHeight / tilemapHeightInTiles;
+
             // Draw the portion of the tilemap based on gameboard array
             for (int y = 0; y < tilemapHeightInTiles; y++)
             {
@@ -86,14 +96,18 @@ namespace TheGameGame
                     // Get the tile index from gameboard
                     int tileIndex = gameboard[y, x];
 
-                    // Calculate source rectangle in your tilesTexture based on tileIndex
-                    Rectangle sourceRectangle = new Rectangle(tileIndex * tileWidth, 0, tileWidth, tileHeight);
+                    // Check if the tileIndex is 0 (empty)
+                    if (tileIndex != 0)
+                    {
+                        // Calculate source rectangle in your tilesTexture based on tileIndex
+                        Rectangle sourceRectangle = new Rectangle((tileIndex - 1) * tileWidth, 0, tileWidth, tileHeight);
 
-                    // Calculate destination rectangle
-                    Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        // Calculate destination rectangle
+                        Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
 
-                    // Draw tile
-                    _spriteBatch.Draw(tilesTexture, destinationRectangle, sourceRectangle, Color.White);
+                        // Draw tile
+                        _spriteBatch.Draw(tilesTexture, destinationRectangle, sourceRectangle, Color.White);
+                    }
                 }
             }
 
@@ -105,5 +119,4 @@ namespace TheGameGame
             base.Draw(gameTime);
         }
     }
-
 }
