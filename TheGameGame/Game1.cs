@@ -99,11 +99,12 @@ namespace TheGameGame
                     // Check if the tileIndex is 0 (empty)
                     if (tileIndex != 0)
                     {
-                        // Calculate source rectangle in your tilesTexture based on tileIndex
-                        Rectangle sourceRectangle = new Rectangle((tileIndex - 1) * tileWidth, 0, tileWidth, tileHeight);
+                        // Adjusting for any spacing or margins between tiles
+                        Rectangle sourceRectangle = new Rectangle((tileIndex - 1) * (tileWidth), 0, tileWidth - 4, tileHeight);
 
                         // Calculate destination rectangle
-                        Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        int horizontalOverlap = 4; // Adjust this value as needed
+                        Rectangle destinationRectangle = new Rectangle(x * tileWidth - x * horizontalOverlap, y * tileHeight, tileWidth, tileHeight);
 
                         // Draw tile
                         _spriteBatch.Draw(tilesTexture, destinationRectangle, sourceRectangle, Color.White);
