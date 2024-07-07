@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
 using TheGameGame.Input;
 
 namespace TheGameGame
@@ -70,6 +71,13 @@ namespace TheGameGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Vector2 positie = hero.GetPositie();
+            int x = (int)Math.Floor(positie.X / 100);
+            int y = (int)Math.Floor(positie.Y / 60);
+            Debug.WriteLine(positie.Y);
+            bool isOnGround = gameboard[y + 1, x]==1;
+
+            hero.UpdateIsOnGround(isOnGround);
             hero.Update(gameTime);
 
             base.Update(gameTime);
@@ -100,11 +108,11 @@ namespace TheGameGame
                     if (tileIndex != 0)
                     {
                         // Adjusting for any spacing or margins between tiles
-                        Rectangle sourceRectangle = new Rectangle((tileIndex - 1) * (tileWidth), 0, tileWidth - 4, tileHeight);
+                        Rectangle sourceRectangle = new Rectangle(0, 0, 95, 95);
 
                         // Calculate destination rectangle
                         int horizontalOverlap = 4; // Adjust this value as needed
-                        Rectangle destinationRectangle = new Rectangle(x * tileWidth - x * horizontalOverlap, y * tileHeight, tileWidth, tileHeight);
+                        Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
 
                         // Draw tile
                         _spriteBatch.Draw(tilesTexture, destinationRectangle, sourceRectangle, Color.White);
