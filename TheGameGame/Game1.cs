@@ -74,7 +74,6 @@ namespace TheGameGame
             Vector2 positie = hero.GetPositie();
             int x = (int)Math.Floor(positie.X / 100);
             int y = (int)Math.Floor(positie.Y / 60);
-            Debug.WriteLine(positie.Y);
             bool isOnGround = gameboard[y + 1, x]==1;
 
             hero.UpdateIsOnGround(isOnGround);

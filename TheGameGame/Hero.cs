@@ -107,8 +107,6 @@ namespace TheGameGame
             {
                 currentAnimatie = runAnimatie;
             }
-            Debug.WriteLine(isOnGround);
-            Debug.WriteLine(positie.Y);
             currentAnimatie.Update(gameTime);
 
             // Check horizontal boundaries and keep the hero within bounds
