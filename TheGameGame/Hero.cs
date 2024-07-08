@@ -73,7 +73,7 @@ namespace TheGameGame
 
             // Update position with vertical speed
             positie.Y += snelheid.Y;
-            if(positie.Y< 0)
+            if (positie.Y < 0)
             {
                 positie.Y = 0;
             }
@@ -110,7 +110,7 @@ namespace TheGameGame
             currentAnimatie.Update(gameTime);
 
             // Check horizontal boundaries and keep the hero within bounds
-            if (positie.X > 799 - 20) positie.X = 799 -20;
+            if (positie.X > 799 - 20) positie.X = 799 - 20;
             if (positie.X < 0) positie.X = 0;
         }
 
