@@ -19,6 +19,7 @@ namespace TheGameGame
         private int tileHeight = 32; // Height of each tile in pixels
         private int tilemapWidthInTiles = 8; // Number of tiles in the tilemap width
         private int tilemapHeightInTiles = 8; // Number of tiles in the tilemap height
+        private Texture2D backgroundTexture;
 
         private int[,] gameboard = new int[,]
         {
@@ -58,6 +59,9 @@ namespace TheGameGame
             // Load Tilemap.png as a Texture2D
             tilesTexture = Content.Load<Texture2D>("Tilemap");
 
+            backgroundTexture = Content.Load<Texture2D>("BG"); 
+
+
             InitializeGameObject();
         }
 
@@ -88,31 +92,28 @@ namespace TheGameGame
 
             _spriteBatch.Begin();
 
+            // draw the background
+            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+
             // Calculate tile dimensions to fill the screen
             int screenWidth = _graphics.PreferredBackBufferWidth;
             int screenHeight = _graphics.PreferredBackBufferHeight;
-
             int tileWidth = screenWidth / tilemapWidthInTiles;
             int tileHeight = screenHeight / tilemapHeightInTiles;
 
-            // Draw the portion of the tilemap based on gameboard array
+            // Draw the portion of the tilemap based on the gameboard array
             for (int y = 0; y < tilemapHeightInTiles; y++)
             {
                 for (int x = 0; x < tilemapWidthInTiles; x++)
                 {
-                    // Get the tile index from gameboard
+                    // Get the tile index from the gameboard
                     int tileIndex = gameboard[y, x];
 
-                    // Check if the tileIndex is 0 (empty)
-                    if (tileIndex != 0)
+                    if (tileIndex != 0)  // Check if the tileIndex is not empty
                     {
                         // Adjusting for any spacing or margins between tiles
                         Rectangle sourceRectangle = new Rectangle(0, 0, 95, 95);
-
-                        // Calculate destination rectangle
-                        int horizontalOverlap = 4; // Adjust this value as needed
                         Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-
                         // Draw tile
                         _spriteBatch.Draw(tilesTexture, destinationRectangle, sourceRectangle, Color.White);
                     }
@@ -126,5 +127,6 @@ namespace TheGameGame
 
             base.Draw(gameTime);
         }
+
     }
 }
