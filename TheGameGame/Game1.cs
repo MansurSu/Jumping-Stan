@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using TheGameGame.Input;
 
 namespace TheGameGame
@@ -12,15 +13,19 @@ namespace TheGameGame
         private SpriteBatch _spriteBatch;
 
         private Texture2D texture;
-        private Texture2D tilesTexture; // Declare Texture2D for tiles
+        private Texture2D tilesTexture;
+        private Texture2D coinTexture;
+        private SpriteFont scoreFont; // Declare SpriteFont
 
-        private int tileWidth = 32; // Width of each tile in pixels
-        private int tileHeight = 32; // Height of each tile in pixels
-        private int tilemapWidthInTiles = 8; // Number of tiles in the gameboard width
-        private int tilemapHeightInTiles = 8; // Number of tiles in the gameboard height
+        private int tileWidth = 32;
+        private int tileHeight = 32;
+        private int tilemapWidthInTiles = 8;
+        private int tilemapHeightInTiles = 8;
         private Texture2D backgroundTexture;
 
         private Tile[,] gameboard;
+        private List<Coin> coins;
+        private int score;
 
         Hero hero;
 
@@ -30,7 +35,6 @@ namespace TheGameGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            // Set the resolution of the game window
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 480;
         }
@@ -38,43 +42,40 @@ namespace TheGameGame
         protected override void Initialize()
         {
             gameboard = new Tile[tilemapHeightInTiles, tilemapWidthInTiles];
+            coins = new List<Coin>();
+            score = 0;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            texture = Content.Load<Texture2D>("SpriteSheet"); // Load your existing texture
-
-            // Load Tilemap.png as a Texture2D
+            texture = Content.Load<Texture2D>("SpriteSheet");
             tilesTexture = Content.Load<Texture2D>("Tilemap");
+            coinTexture = Content.Load<Texture2D>("coin");
+            scoreFont = Content.Load<SpriteFont>("ScoreFont"); // Load SpriteFont
 
             backgroundTexture = Content.Load<Texture2D>("BG");
 
             InitializeGameObject();
-
-            // Initialize the gameboard
             InitializeGameboard();
+            InitializeCoins();
         }
 
         private void InitializeGameObject()
         {
-            // Set the initial position of the hero to the bottom-left corner
-            float initialX = 21; // Leftmost position
-            float initialY = _graphics.PreferredBackBufferHeight - 90; // Adjust for hero height, bottom-most position
+            float initialX = 21;
+            float initialY = _graphics.PreferredBackBufferHeight - 90;
             hero = new Hero(texture, new KeyBoardreader(), new Vector2(initialX, initialY));
         }
 
-
         private void InitializeGameboard()
         {
-            // Define the tile types and source rectangles for each tile
-            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64); // Source rectangle for tile 1
-            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32); // Source rectangle for tile 2
-            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64); // Source rectangle for tile 3
-            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55); // Source rectangle for tile 4
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
 
-            // Map the gameboard
             int[,] tileMap = new int[,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -87,7 +88,6 @@ namespace TheGameGame
                 { 1, 1, 1, 1, 1, 1, 1, 1 }
             };
 
-            // Initialize tiles
             for (int y = 0; y < tilemapHeightInTiles; y++)
             {
                 for (int x = 0; x < tilemapWidthInTiles; x++)
@@ -117,6 +117,14 @@ namespace TheGameGame
             }
         }
 
+        private void InitializeCoins()
+        {
+            coins.Add(new Coin(coinTexture, new Vector2(200, 400), 0.25f)); // Adjust the scale factor as needed
+            coins.Add(new Coin(coinTexture, new Vector2(300, 300), 0.25f)); // Adjust the scale factor as needed
+            coins.Add(new Coin(coinTexture, new Vector2(400, 200), 0.25f)); // Adjust the scale factor as needed
+        }
+
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -130,6 +138,17 @@ namespace TheGameGame
             hero.UpdateIsOnGround(isOnGround);
             hero.Update(gameTime);
 
+            for (int i = coins.Count - 1; i >= 0; i--)
+            {
+                coins[i].Update(gameTime);
+
+                if (hero.GetBounds().Intersects(coins[i].GetBounds()))
+                {
+                    score += 10;
+                    coins.RemoveAt(i);
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -139,32 +158,34 @@ namespace TheGameGame
 
             _spriteBatch.Begin();
 
-            // Draw the background
             _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
 
-            // Calculate tile dimensions to fill the screen
             int screenWidth = _graphics.PreferredBackBufferWidth;
             int screenHeight = _graphics.PreferredBackBufferHeight;
             int tileWidth = screenWidth / tilemapWidthInTiles;
             int tileHeight = screenHeight / tilemapHeightInTiles;
 
-            // Draw the portion of the tilemap based on the gameboard array
             for (int y = 0; y < tilemapHeightInTiles; y++)
             {
                 for (int x = 0; x < tilemapWidthInTiles; x++)
                 {
                     Tile tile = gameboard[y, x];
-                    if (tile != null)  // Check if the tile is not null
+                    if (tile != null)
                     {
                         Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-                        // Draw tile
                         _spriteBatch.Draw(tile.Texture, destinationRectangle, tile.SourceRectangle, Color.White);
                     }
                 }
             }
 
-            // Draw hero using _spriteBatch
             hero.Draw(_spriteBatch);
+
+            foreach (var coin in coins)
+            {
+                coin.Draw(_spriteBatch);
+            }
+
+            _spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(screenWidth - 100, 10), Color.White);
 
             _spriteBatch.End();
 

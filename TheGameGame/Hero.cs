@@ -40,12 +40,10 @@ namespace TheGameGame
             this.inputReader = reader;
         }
 
-
         public void Update(GameTime gameTime)
         {
             var direction = inputReader.ReadInput();
 
-            // Update facing direction
             if (direction.X < 0)
             {
                 facingRight = false;
@@ -55,16 +53,13 @@ namespace TheGameGame
                 facingRight = true;
             }
 
-            // Horizontal movement
             positie.X += direction.X * snelheid.X;
 
-            // Apply gravity only if not on the ground
             if (!isOnGround)
             {
                 snelheid.Y += gravity;
             }
 
-            // Jumping logic
             if (direction.Y == -1 && isOnGround)
             {
                 snelheid.Y = jumpStrength;
@@ -72,7 +67,6 @@ namespace TheGameGame
                 isOnGround = false;
             }
 
-            // Update position with vertical speed
             positie.Y += snelheid.Y;
             if (positie.Y < 0)
             {
@@ -86,8 +80,7 @@ namespace TheGameGame
                 isJumping = false;
             }
 
-            // Check if hero has landed
-            if (positie.Y >= 480) // Assuming 600 is the ground level
+            if (positie.Y >= 480)
             {
                 positie.Y = 479;
                 snelheid.Y = 0;
@@ -95,7 +88,6 @@ namespace TheGameGame
                 isJumping = false;
             }
 
-            // Update animation
             if (direction == Vector2.Zero)
             {
                 currentAnimatie = idleAnimatie;
@@ -110,20 +102,14 @@ namespace TheGameGame
             }
             currentAnimatie.Update(gameTime);
 
-            // Check horizontal boundaries and keep the hero within bounds
             if (positie.X > 799 - 20) positie.X = 799 - 20;
             if (positie.X < 0) positie.X = 0;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Determine the sprite effects based on the facing direction
             SpriteEffects spriteEffects = facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-            // Specify the scale factor
             float scale = 0.3f;
-
-            // Calculate the origin to maintain the position
             Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
 
             spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);
@@ -137,6 +123,11 @@ namespace TheGameGame
         public void UpdateIsOnGround(bool value)
         {
             isOnGround = value;
+        }
+
+        public Rectangle GetBounds()
+        {
+            return new Rectangle((int)positie.X, (int)positie.Y, (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width * 0.3), (int)(currentAnimatie.CurrentFrame.SourceRectangle.Height * 0.3));
         }
     }
 }
