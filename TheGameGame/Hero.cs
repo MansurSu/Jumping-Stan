@@ -24,7 +24,7 @@ namespace TheGameGame
         IInputReader inputReader;
         private int heroSize = 90;
 
-        public Hero(Texture2D texture, IInputReader reader)
+        public Hero(Texture2D texture, IInputReader reader, Vector2 initialPosition)
         {
             heroTexture = texture;
             jumpAnimatie = new Animatie();
@@ -35,10 +35,11 @@ namespace TheGameGame
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 300, 300, 300)));
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
-            positie = new Vector2(10, 10);
+            positie = initialPosition;
             snelheid = new Vector2(6, 0); // Horizontal speed
             this.inputReader = reader;
         }
+
 
         public void Update(GameTime gameTime)
         {

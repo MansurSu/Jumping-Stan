@@ -59,8 +59,12 @@ namespace TheGameGame
 
         private void InitializeGameObject()
         {
-            hero = new Hero(texture, new KeyBoardreader());
+            // Set the initial position of the hero to the bottom-left corner
+            float initialX = 21; // Leftmost position
+            float initialY = _graphics.PreferredBackBufferHeight - 90; // Adjust for hero height, bottom-most position
+            hero = new Hero(texture, new KeyBoardreader(), new Vector2(initialX, initialY));
         }
+
 
         private void InitializeGameboard()
         {
