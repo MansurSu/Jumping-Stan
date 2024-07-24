@@ -143,7 +143,7 @@ namespace TheGameGame
 
             SetTileMap(tileMap);
 
-            int flagTileX = 4;
+            int flagTileX = 1;
             int flagTileY = 2;
             flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
         }
@@ -169,7 +169,7 @@ namespace TheGameGame
 
             SetTileMap(tileMap);
 
-            int flagTileX = 7;
+            int flagTileX = 1;
             int flagTileY = 2;
             flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
         }
@@ -213,14 +213,22 @@ namespace TheGameGame
             if (currentLevel == 1)
             {
                 coins.Add(new Coin(coinTexture, new Vector2(150, 300), coinScale, coinFrameTime));
+                
+                coins.Add(new Coin(coinTexture, new Vector2(250, 380), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(300, 380), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(350, 380), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(400, 380), coinScale, coinFrameTime));
                 coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
                 coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
             }
             else if (currentLevel == 2)
             {
                 coins.Add(new Coin(coinTexture, new Vector2(100, 250), coinScale, coinFrameTime));
-                coins.Add(new Coin(coinTexture, new Vector2(400, 200), coinScale, coinFrameTime));
-                coins.Add(new Coin(coinTexture, new Vector2(600, 350), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(200, 250), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(300, 250), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(320, 380), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(370, 380), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(420, 380), coinScale, coinFrameTime));
             }
             else if (currentLevel == 3)
             {
