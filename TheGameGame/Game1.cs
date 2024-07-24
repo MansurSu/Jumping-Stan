@@ -158,7 +158,69 @@ namespace TheGameGame
                 }
             }
 
+            // Check if hero collides with the flag
+            if (hero.GetBoundingBox().Intersects(new Rectangle((int)flagPosition.X, (int)flagPosition.Y, (int)(flagTexture.Width * flagScale), (int)(flagTexture.Height * flagScale))))
+            {
+                LoadNextLevel();
+            }
+
             base.Update(gameTime);
+        }
+
+        private void LoadNextLevel()
+        {
+            // Define the tile types and source rectangles for each tile
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64); // Source rectangle for tile 1
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32); // Source rectangle for tile 2
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64); // Source rectangle for tile 3
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55); // Source rectangle for tile 4
+
+            int[,] tileMap = new int[,]
+            {
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 2, 0, 1, 2, 3, 2, 2, 2 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 1, 1, 1, 1, 1, 1, 1, 1 }
+            };
+
+            for (int y = 0; y < tilemapHeightInTiles; y++)
+            {
+                for (int x = 0; x < tilemapWidthInTiles; x++)
+                {
+                    int tileIndex = tileMap[y, x];
+                    Tile tile;
+                    switch (tileIndex)
+                    {
+                        case 1:
+                            tile = new Tile(tilesTexture, TileType.Impassable, tile1Rect);
+                            break;
+                        case 2:
+                            tile = new Tile(tilesTexture, TileType.Platform, tile2Rect);
+                            break;
+                        case 3:
+                            tile = new Tile(tilesTexture, TileType.Impassable, tile3Rect);
+                            break;
+                        case 4:
+                            tile = new Tile(tilesTexture, TileType.Impassable, tile4Rect);
+                            break;
+                        default:
+                            tile = null;
+                            break;
+                    }
+                    gameboard[y, x] = tile;
+                }
+            }
+
+            // Initialize coins for the next level
+            coins.Clear();
+            InitializeCoins();
+
+            // Reset hero position for the next level
+            hero.SetPosition(new Vector2(21, _graphics.PreferredBackBufferHeight - 90));
         }
 
         protected override void Draw(GameTime gameTime)

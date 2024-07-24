@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿// Updated Hero class with SetPosition method
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using TheGameGame.interfaces;
 using TheGameGame.Animation;
@@ -86,7 +87,7 @@ namespace TheGameGame
             }
 
             // Check if hero has landed
-            if (positie.Y >= 480) // Assuming 600 is the ground level
+            if (positie.Y >= 480) // Assuming 480 is the ground level
             {
                 positie.Y = 479;
                 snelheid.Y = 0;
@@ -145,6 +146,11 @@ namespace TheGameGame
                 (int)positie.Y,
                 (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width * 0.3f),
                 (int)(currentAnimatie.CurrentFrame.SourceRectangle.Height * 0.3f));
+        }
+
+        public void SetPosition(Vector2 newPosition)
+        {
+            positie = newPosition;
         }
     }
 }
