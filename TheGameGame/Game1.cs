@@ -13,24 +13,25 @@ namespace TheGameGame
         private SpriteBatch _spriteBatch;
 
         private Texture2D texture;
-        private Texture2D tilesTexture; // Declare Texture2D for tiles
-        private Texture2D coinTexture; // Declare Texture2D for coins
-        private Texture2D flagTexture;  // Declare Texture2D for flag
-        private SpriteFont scoreFont; // Declare SpriteFont for score display
+        private Texture2D tilesTexture;
+        private Texture2D coinTexture;
+        private Texture2D flagTexture;
+        private SpriteFont scoreFont;
 
-        private int tileWidth = 32; // Width of each tile in pixels
-        private int tileHeight = 32; // Height of each tile in pixels
-        private int tilemapWidthInTiles = 8; // Number of tiles in the gameboard width
-        private int tilemapHeightInTiles = 8; // Number of tiles in the gameboard height
+        private int tileWidth = 32;
+        private int tileHeight = 32;
+        private int tilemapWidthInTiles = 8;
+        private int tilemapHeightInTiles = 8;
         private Texture2D backgroundTexture;
 
         private Tile[,] gameboard;
-        private List<Coin> coins; // List to hold coins
-        private int score; // Variable to hold the score
+        private List<Coin> coins;
+        private int score;
         private Vector2 flagPosition;
-        private float flagScale = 2.2f; // Scale for the flag
+        private float flagScale = 2.2f;
 
-        Hero hero;
+        private Hero hero;
+        private int currentLevel;
 
         public Game1()
         {
@@ -38,7 +39,6 @@ namespace TheGameGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            // Set the resolution of the game window
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 480;
         }
@@ -46,51 +46,136 @@ namespace TheGameGame
         protected override void Initialize()
         {
             gameboard = new Tile[tilemapHeightInTiles, tilemapWidthInTiles];
-            coins = new List<Coin>(); // Initialize the coin list
+            coins = new List<Coin>();
+            currentLevel = 1; // Start with level 1
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            texture = Content.Load<Texture2D>("SpriteSheet"); // Load your existing texture
+            texture = Content.Load<Texture2D>("SpriteSheet");
             tilesTexture = Content.Load<Texture2D>("Tilemap");
             coinTexture = Content.Load<Texture2D>("coin");
             backgroundTexture = Content.Load<Texture2D>("BG");
-            flagTexture = Content.Load<Texture2D>("Flag"); // Load the flag texture
-            scoreFont = Content.Load<SpriteFont>("ScoreFont"); // Load the score font
+            flagTexture = Content.Load<Texture2D>("Flag");
+            scoreFont = Content.Load<SpriteFont>("ScoreFont");
 
             InitializeGameObject();
-            InitializeGameboard();
-            InitializeCoins();
+            LoadLevel(currentLevel);
         }
 
         private void InitializeGameObject()
         {
-            float initialX = 21; // Leftmost position
-            float initialY = _graphics.PreferredBackBufferHeight - 90; // Adjust for hero height, bottom-most position
+            float initialX = 21;
+            float initialY = _graphics.PreferredBackBufferHeight - 90;
             hero = new Hero(texture, new KeyBoardreader(), new Vector2(initialX, initialY));
         }
 
-        private void InitializeGameboard()
+        private void LoadLevel(int level)
         {
-            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64); // Source rectangle for tile 1
-            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32); // Source rectangle for tile 2
-            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64); // Source rectangle for tile 3
-            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55); // Source rectangle for tile 4
+            switch (level)
+            {
+                case 1:
+                    LoadLevel1();
+                    break;
+                case 2:
+                    LoadLevel2();
+                    break;
+                case 3:
+                    LoadLevel3();
+                    break;
+                default:
+                    LoadLevel1();
+                    break;
+            }
+
+            coins.Clear();
+            InitializeCoins();
+
+            hero.SetPosition(new Vector2(21, _graphics.PreferredBackBufferHeight - 90));
+        }
+
+        private void LoadLevel1()
+        {
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
 
             int[,] tileMap = new int[,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 2, 2, 0, 2, 0, 2, 0, 0 },
+                { 2, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 2, 0, 2, 0, 2, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 2 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 1, 1, 1, 1, 1, 1, 1, 1 }
+                { 0, 3, 0, 0, 0, 3, 0, 0 },
+                { 1, 4, 1, 1, 1, 4, 1, 1 }
             };
 
+            SetTileMap(tileMap);
+
+            int flagTileX = 1;
+            int flagTileY = 2;
+            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+        }
+
+        private void LoadLevel2()
+        {
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
+
+            int[,] tileMap = new int[,]
+            {
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 2, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 2, 0, 0, 2, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 2 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 3, 0, 0, 0, 0, 3 },
+                { 1, 1, 4, 1, 1, 1, 1, 4 }
+            };
+
+            SetTileMap(tileMap);
+
+            int flagTileX = 4;
+            int flagTileY = 2;
+            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+        }
+
+        private void LoadLevel3()
+        {
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
+
+            int[,] tileMap = new int[,]
+            {
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 2, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 2, 2, 2, 2, 2, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 2 },
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 3, 0, 0, 0, 0, 3 },
+                { 1, 1, 4, 1, 1, 1, 1, 4 }
+            };
+
+            SetTileMap(tileMap);
+
+            int flagTileX = 7;
+            int flagTileY = 2;
+            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+        }
+
+        private void SetTileMap(int[,] tileMap)
+        {
             for (int y = 0; y < tilemapHeightInTiles; y++)
             {
                 for (int x = 0; x < tilemapWidthInTiles; x++)
@@ -100,16 +185,16 @@ namespace TheGameGame
                     switch (tileIndex)
                     {
                         case 1:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile1Rect);
+                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 0, 75, 64));
                             break;
                         case 2:
-                            tile = new Tile(tilesTexture, TileType.Platform, tile2Rect);
+                            tile = new Tile(tilesTexture, TileType.Platform, new Rectangle(96, 96, 32, 32));
                             break;
                         case 3:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile3Rect);
+                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(0, 0, 96, 64));
                             break;
                         case 4:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile4Rect);
+                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 32, 74, 55));
                             break;
                         default:
                             tile = null;
@@ -118,21 +203,31 @@ namespace TheGameGame
                     gameboard[y, x] = tile;
                 }
             }
-
-            // Set the flag position on top of the leftmost tile 2
-            int flagTileX = 1; // X position of the tile
-            int flagTileY = 4; // Y position of the tile
-            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2); // Adjust the flag position to sit on top of the tile
         }
 
         private void InitializeCoins()
         {
-            float coinScale = 0.12f; // Set the scale to make the coins smaller
-            double coinFrameTime = 0.1; // Set the frame time to slow down the animation
+            float coinScale = 0.12f;
+            double coinFrameTime = 0.1;
 
-            coins.Add(new Coin(coinTexture, new Vector2(150, 300), coinScale, coinFrameTime));
-            coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
-            coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
+            if (currentLevel == 1)
+            {
+                coins.Add(new Coin(coinTexture, new Vector2(150, 300), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
+            }
+            else if (currentLevel == 2)
+            {
+                coins.Add(new Coin(coinTexture, new Vector2(100, 250), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(400, 200), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(600, 350), coinScale, coinFrameTime));
+            }
+            else if (currentLevel == 3)
+            {
+                coins.Add(new Coin(coinTexture, new Vector2(50, 100), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(300, 150), coinScale, coinFrameTime));
+                coins.Add(new Coin(coinTexture, new Vector2(700, 200), coinScale, coinFrameTime));
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -140,9 +235,9 @@ namespace TheGameGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Vector2 positie = hero.GetPositie();
-            int x = (int)Math.Floor(positie.X / 100);
-            int y = (int)Math.Floor(positie.Y / 60);
+            Vector2 position = hero.GetPositie();
+            int x = (int)Math.Floor(position.X / 100);
+            int y = (int)Math.Floor(position.Y / 60);
             bool isOnGround = gameboard[y + 1, x]?.TileType == TileType.Impassable || gameboard[y + 1, x]?.TileType == TileType.Platform;
 
             hero.UpdateIsOnGround(isOnGround);
@@ -154,73 +249,22 @@ namespace TheGameGame
                 if (coins[i].IsCollected(hero))
                 {
                     coins.RemoveAt(i);
-                    score += 10; // Increase score by 10 for each collected coin
+                    score += 10;
                 }
             }
 
-            // Check if hero collides with the flag
             if (hero.GetBoundingBox().Intersects(new Rectangle((int)flagPosition.X, (int)flagPosition.Y, (int)(flagTexture.Width * flagScale), (int)(flagTexture.Height * flagScale))))
             {
-                LoadNextLevel();
+                currentLevel++;
+                if (currentLevel > 3)
+                {
+                    // If there are no more levels, reset to level 1 or show a win screen
+                    currentLevel = 1;
+                }
+                LoadLevel(currentLevel);
             }
 
             base.Update(gameTime);
-        }
-
-        private void LoadNextLevel()
-        {
-            // Define the tile types and source rectangles for each tile
-            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64); // Source rectangle for tile 1
-            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32); // Source rectangle for tile 2
-            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64); // Source rectangle for tile 3
-            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55); // Source rectangle for tile 4
-
-            int[,] tileMap = new int[,]
-            {
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 2, 0, 1, 2, 3, 2, 2, 2 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 1, 1, 1, 1, 1, 1, 1, 1 }
-            };
-
-            for (int y = 0; y < tilemapHeightInTiles; y++)
-            {
-                for (int x = 0; x < tilemapWidthInTiles; x++)
-                {
-                    int tileIndex = tileMap[y, x];
-                    Tile tile;
-                    switch (tileIndex)
-                    {
-                        case 1:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile1Rect);
-                            break;
-                        case 2:
-                            tile = new Tile(tilesTexture, TileType.Platform, tile2Rect);
-                            break;
-                        case 3:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile3Rect);
-                            break;
-                        case 4:
-                            tile = new Tile(tilesTexture, TileType.Impassable, tile4Rect);
-                            break;
-                        default:
-                            tile = null;
-                            break;
-                    }
-                    gameboard[y, x] = tile;
-                }
-            }
-
-            // Initialize coins for the next level
-            coins.Clear();
-            InitializeCoins();
-
-            // Reset hero position for the next level
-            hero.SetPosition(new Vector2(21, _graphics.PreferredBackBufferHeight - 90));
         }
 
         protected override void Draw(GameTime gameTime)
@@ -258,7 +302,6 @@ namespace TheGameGame
 
             _spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
 
-            // Draw the flag
             _spriteBatch.Draw(flagTexture, flagPosition, null, Color.White, 0, Vector2.Zero, flagScale, SpriteEffects.None, 0);
 
             _spriteBatch.End();
