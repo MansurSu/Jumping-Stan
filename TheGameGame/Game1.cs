@@ -13,19 +13,19 @@ namespace TheGameGame
         private SpriteBatch _spriteBatch;
 
         private Texture2D texture;
-        private Texture2D tilesTexture;
-        private Texture2D coinTexture;
-        private SpriteFont scoreFont; // Declare SpriteFont
+        private Texture2D tilesTexture; // Declare Texture2D for tiles
+        private Texture2D coinTexture; // Declare Texture2D for coins
+        private SpriteFont scoreFont; // Declare SpriteFont for score display
 
-        private int tileWidth = 32;
-        private int tileHeight = 32;
-        private int tilemapWidthInTiles = 8;
-        private int tilemapHeightInTiles = 8;
+        private int tileWidth = 32; // Width of each tile in pixels
+        private int tileHeight = 32; // Height of each tile in pixels
+        private int tilemapWidthInTiles = 8; // Number of tiles in the gameboard width
+        private int tilemapHeightInTiles = 8; // Number of tiles in the gameboard height
         private Texture2D backgroundTexture;
 
         private Tile[,] gameboard;
-        private List<Coin> coins;
-        private int score;
+        private List<Coin> coins; // List to hold coins
+        private int score; // Variable to hold the score
 
         Hero hero;
 
@@ -35,6 +35,7 @@ namespace TheGameGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            // Set the resolution of the game window
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 480;
         }
@@ -42,20 +43,18 @@ namespace TheGameGame
         protected override void Initialize()
         {
             gameboard = new Tile[tilemapHeightInTiles, tilemapWidthInTiles];
-            coins = new List<Coin>();
-            score = 0;
+            coins = new List<Coin>(); // Initialize the coin list
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            texture = Content.Load<Texture2D>("SpriteSheet");
+            texture = Content.Load<Texture2D>("SpriteSheet"); // Load your existing texture
             tilesTexture = Content.Load<Texture2D>("Tilemap");
             coinTexture = Content.Load<Texture2D>("coin");
-            scoreFont = Content.Load<SpriteFont>("ScoreFont"); // Load SpriteFont
-
             backgroundTexture = Content.Load<Texture2D>("BG");
+            scoreFont = Content.Load<SpriteFont>("ScoreFont"); // Load the score font
 
             InitializeGameObject();
             InitializeGameboard();
@@ -64,17 +63,17 @@ namespace TheGameGame
 
         private void InitializeGameObject()
         {
-            float initialX = 21;
-            float initialY = _graphics.PreferredBackBufferHeight - 90;
+            float initialX = 21; // Leftmost position
+            float initialY = _graphics.PreferredBackBufferHeight - 90; // Adjust for hero height, bottom-most position
             hero = new Hero(texture, new KeyBoardreader(), new Vector2(initialX, initialY));
         }
 
         private void InitializeGameboard()
         {
-            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
-            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
-            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
-            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
+            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64); // Source rectangle for tile 1
+            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32); // Source rectangle for tile 2
+            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64); // Source rectangle for tile 3
+            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55); // Source rectangle for tile 4
 
             int[,] tileMap = new int[,]
             {
@@ -119,10 +118,14 @@ namespace TheGameGame
 
         private void InitializeCoins()
         {
-            coins.Add(new Coin(coinTexture, new Vector2(200, 400), 0.25f)); // Adjust the scale factor as needed
-            coins.Add(new Coin(coinTexture, new Vector2(300, 300), 0.25f)); // Adjust the scale factor as needed
-            coins.Add(new Coin(coinTexture, new Vector2(400, 200), 0.25f)); // Adjust the scale factor as needed
+            float coinScale = 0.12f; // Set the scale to make the coins smaller
+            double coinFrameTime = 0.1; // Set the frame time to slow down the animation
+
+            coins.Add(new Coin(coinTexture, new Vector2(150, 300), coinScale, coinFrameTime));
+            coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
+            coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
         }
+
 
 
         protected override void Update(GameTime gameTime)
@@ -141,11 +144,10 @@ namespace TheGameGame
             for (int i = coins.Count - 1; i >= 0; i--)
             {
                 coins[i].Update(gameTime);
-
-                if (hero.GetBounds().Intersects(coins[i].GetBounds()))
+                if (coins[i].IsCollected(hero))
                 {
-                    score += 10;
                     coins.RemoveAt(i);
+                    score += 10; // Increase score by 10 for each collected coin
                 }
             }
 
@@ -178,14 +180,14 @@ namespace TheGameGame
                 }
             }
 
-            hero.Draw(_spriteBatch);
-
             foreach (var coin in coins)
             {
                 coin.Draw(_spriteBatch);
             }
 
-            _spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(screenWidth - 100, 10), Color.White);
+            hero.Draw(_spriteBatch);
+
+            _spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
 
             _spriteBatch.End();
 
