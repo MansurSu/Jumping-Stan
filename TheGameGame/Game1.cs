@@ -15,6 +15,7 @@ namespace TheGameGame
         private Texture2D texture;
         private Texture2D tilesTexture; // Declare Texture2D for tiles
         private Texture2D coinTexture; // Declare Texture2D for coins
+        private Texture2D flagTexture;  // Declare Texture2D for flag
         private SpriteFont scoreFont; // Declare SpriteFont for score display
 
         private int tileWidth = 32; // Width of each tile in pixels
@@ -26,6 +27,8 @@ namespace TheGameGame
         private Tile[,] gameboard;
         private List<Coin> coins; // List to hold coins
         private int score; // Variable to hold the score
+        private Vector2 flagPosition;
+        private float flagScale = 2.2f; // Scale for the flag
 
         Hero hero;
 
@@ -54,6 +57,7 @@ namespace TheGameGame
             tilesTexture = Content.Load<Texture2D>("Tilemap");
             coinTexture = Content.Load<Texture2D>("coin");
             backgroundTexture = Content.Load<Texture2D>("BG");
+            flagTexture = Content.Load<Texture2D>("Flag"); // Load the flag texture
             scoreFont = Content.Load<SpriteFont>("ScoreFont"); // Load the score font
 
             InitializeGameObject();
@@ -114,6 +118,11 @@ namespace TheGameGame
                     gameboard[y, x] = tile;
                 }
             }
+
+            // Set the flag position on top of the leftmost tile 2
+            int flagTileX = 1; // X position of the tile
+            int flagTileY = 4; // Y position of the tile
+            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2); // Adjust the flag position to sit on top of the tile
         }
 
         private void InitializeCoins()
@@ -125,8 +134,6 @@ namespace TheGameGame
             coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
         }
-
-
 
         protected override void Update(GameTime gameTime)
         {
@@ -188,6 +195,9 @@ namespace TheGameGame
             hero.Draw(_spriteBatch);
 
             _spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
+
+            // Draw the flag
+            _spriteBatch.Draw(flagTexture, flagPosition, null, Color.White, 0, Vector2.Zero, flagScale, SpriteEffects.None, 0);
 
             _spriteBatch.End();
 

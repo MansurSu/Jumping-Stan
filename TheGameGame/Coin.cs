@@ -26,8 +26,8 @@ namespace TheGameGame
                 new Rectangle(171, 0, 171, 171),
                 new Rectangle(342, 0, 171, 171),
                 new Rectangle(513, 0, 171, 171),
-                new Rectangle(684, 0, 171, 171),
-                new Rectangle(855, 0, 171, 171)
+                //new Rectangle(684, 0, 171, 171),
+                //new Rectangle(855, 0, 171, 171)
             };
         }
 
