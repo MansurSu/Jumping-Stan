@@ -113,6 +113,7 @@ namespace TheGameGame
             // Check horizontal boundaries and keep the hero within bounds
             if (positie.X > 799 - 20) positie.X = 799 - 20;
             if (positie.X < 0) positie.X = 0;
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -124,6 +125,10 @@ namespace TheGameGame
             float scale = 0.3f;
 
             // Calculate the origin to maintain the position
+            if (currentAnimatie == null)
+            {
+                currentAnimatie = idleAnimatie;
+            }
             Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
 
             spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);
@@ -138,6 +143,11 @@ namespace TheGameGame
         {
             isOnGround = value;
         }
+        
+        // public void UpdateSuroundingTiles()
+        // {
+        // 
+        // }
 
         public Rectangle GetBoundingBox()
         {
