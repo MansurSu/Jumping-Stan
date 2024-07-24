@@ -51,6 +51,9 @@ namespace TheGameGame
             base.Initialize();
         }
 
+        private Texture2D zombieTexture;
+        private Enemy zombie;
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -61,9 +64,28 @@ namespace TheGameGame
             flagTexture = Content.Load<Texture2D>("Flag");
             scoreFont = Content.Load<SpriteFont>("ScoreFont");
 
+            // Load zombie texture and set up frames
+            zombieTexture = Content.Load<Texture2D>("enemy1"); // Load the zombie sprite sheet
+
+            // Assuming the sprite sheet is 2618x1157 with 3 images (adjust accordingly)
+            Rectangle[] zombieFrames = new Rectangle[]
+            {
+             new Rectangle(0, 0, 872, 1157), // Adjust these rectangles based on actual sprite positions
+             new Rectangle(872, 0, 872, 1157),
+              new Rectangle(1744, 0, 872, 1157)
+            };
+
+            // Initialize the zombie with a scale factor
+            Vector2 zombieStartPosition = new Vector2(100, _graphics.PreferredBackBufferHeight - 80); // Adjust as needed
+            float zombieSpeed = 1.0f; // Adjust speed as needed
+            float zombieScale = 0.11f; // Adjust scale to make the zombie smaller
+            zombie = new Enemy(zombieTexture, zombieFrames, zombieStartPosition, zombieSpeed, zombieScale);
+
             InitializeGameObject();
             LoadLevel(currentLevel);
         }
+
+
 
         private void InitializeGameObject()
         {
@@ -266,14 +288,18 @@ namespace TheGameGame
                 currentLevel++;
                 if (currentLevel > 3)
                 {
-                    // If there are no more levels, reset to level 1 or show a win screen
                     currentLevel = 1;
                 }
                 LoadLevel(currentLevel);
             }
 
+            // Update the zombie with the gameboard
+            zombie.Update(gameTime, gameboard);
+
             base.Update(gameTime);
         }
+
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -312,9 +338,13 @@ namespace TheGameGame
 
             _spriteBatch.Draw(flagTexture, flagPosition, null, Color.White, 0, Vector2.Zero, flagScale, SpriteEffects.None, 0);
 
+            // Draw the zombie
+            zombie.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
     }
 }
