@@ -18,19 +18,20 @@ namespace TheGameGame
         private Texture2D flagTexture;
         private SpriteFont scoreFont;
         private StartScreen menu;
+        private WinScreen victoryScreen;
         private GameState gameState;
 
-        private int tileWidth = 32;
-        private int tileHeight = 32;
-        private int tilemapWidthInTiles = 8;
-        private int tilemapHeightInTiles = 8;
+        private readonly int tileWidth = 32;
+        private readonly int tileHeight = 32;
+        private readonly int tilemapWidthInTiles = 8;
+        private readonly int tilemapHeightInTiles = 8;
         private Texture2D backgroundTexture;
 
         private Tile[,] gameboard;
         private List<Coin> coins;
         private int score;
         private Vector2 flagPosition;
-        private float flagScale = 2.2f;
+        private readonly float flagScale = 2.2f;
 
         private Hero hero;
         private int currentLevel;
@@ -69,18 +70,31 @@ namespace TheGameGame
 
         private void LoadMenu()
         {
-            int buttonWidth = 200;
-            int buttonHeight = 200;
+            const int buttonWidth = 200;
+            const int buttonHeight = 200;
             int buttonX = (GraphicsDevice.Viewport.Width - buttonWidth) / 2;
             int buttonY = (GraphicsDevice.Viewport.Height - buttonHeight) / 2;
             Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
-            Rectangle startButtonRectangle = new Rectangle(buttonX, buttonY, buttonWidth, buttonHeight);
+            Rectangle startButtonRectangle = new (buttonX, buttonY, buttonWidth, buttonHeight);
             menu = new StartScreen(startButtonTexture, startButtonRectangle);
+            LoadVictoryScreen();
+        }
+
+        private void LoadVictoryScreen()
+        {
+            const int buttonWidth = 200;
+            const int buttonHeight = 200;
+            int buttonX = (GraphicsDevice.Viewport.Width - buttonWidth) / 2;
+            int buttonY = (GraphicsDevice.Viewport.Height - buttonHeight) / 2;
+            Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
+            Rectangle startButtonRectangle = new (buttonX, buttonY+75, buttonWidth, buttonHeight);
+            Vector2 victoryTextRectangle = new (buttonX, buttonY-75);
+            victoryScreen = new WinScreen(startButtonTexture, startButtonRectangle, victoryTextRectangle, scoreFont);
         }
 
         private void InitializeGameObject()
         {
-            float initialX = 21;
+            const float initialX = 21;
             float initialY = _graphics.PreferredBackBufferHeight - 90;
             hero = new Hero(texture, new KeyBoardreader(), new Vector2(initialX, initialY));
         }
@@ -148,8 +162,8 @@ namespace TheGameGame
 
             SetTileMap(tileMap);
 
-            int flagTileX = 1;
-            int flagTileY = 2;
+            const int flagTileX = 1;
+            const int flagTileY = 2;
             flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
         }
 
@@ -174,8 +188,8 @@ namespace TheGameGame
 
             SetTileMap(tileMap);
 
-            int flagTileX = 1;
-            int flagTileY = 2;
+            const int flagTileX = 1;
+            const int flagTileY = 2;
             flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
         }
 
@@ -212,25 +226,14 @@ namespace TheGameGame
                 for (int x = 0; x < tilemapWidthInTiles; x++)
                 {
                     int tileIndex = tileMap[y, x];
-                    Tile tile;
-                    switch (tileIndex)
+                    Tile tile = tileIndex switch
                     {
-                        case 1:
-                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 0, 75, 64));
-                            break;
-                        case 2:
-                            tile = new Tile(tilesTexture, TileType.Platform, new Rectangle(96, 96, 32, 32));
-                            break;
-                        case 3:
-                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(0, 0, 96, 64));
-                            break;
-                        case 4:
-                            tile = new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 32, 74, 55));
-                            break;
-                        default:
-                            tile = null;
-                            break;
-                    }
+                        1 => new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 0, 75, 64)),
+                        2 => new Tile(tilesTexture, TileType.Platform, new Rectangle(96, 96, 32, 32)),
+                        3 => new Tile(tilesTexture, TileType.Impassable, new Rectangle(0, 0, 96, 64)),
+                        4 => new Tile(tilesTexture, TileType.Impassable, new Rectangle(10, 32, 74, 55)),
+                        _ => null,
+                    };
                     gameboard[y, x] = tile;
                 }
             }
@@ -238,8 +241,8 @@ namespace TheGameGame
 
         private void InitializeCoins()
         {
-            float coinScale = 0.12f;
-            double coinFrameTime = 0.1;
+            const float coinScale = 0.12f;
+            const double coinFrameTime = 0.1;
 
             if (currentLevel == 1)
             {
@@ -309,6 +312,7 @@ namespace TheGameGame
                     currentLevel++;
                     if (currentLevel > 3)
                     {
+                        victoryScreen.Win();
                         gameState = GameState.Win;
                     }
                     else
@@ -324,7 +328,8 @@ namespace TheGameGame
             }
             else if(gameState == GameState.Win)
             {
-                //TODO
+                MouseState mouseState = Mouse.GetState();
+                victoryScreen.Update(gameTime, mouseState);
             }
         }
 
@@ -336,12 +341,11 @@ namespace TheGameGame
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            _spriteBatch.Draw(backgroundTexture, GraphicsDevice.Viewport.Bounds, Color.White);
 
             if (gameState == GameState.MenuScreen)
             {
                 // Teken de achtergrondafbeelding op het hele scherm
-                _spriteBatch.Draw(backgroundTexture, GraphicsDevice.Viewport.Bounds, Color.White);
                 menu.Draw(_spriteBatch);
                 this.IsMouseVisible = true;
                 if (menu.IsStartButtonClicked)
@@ -349,8 +353,9 @@ namespace TheGameGame
                     gameState = GameState.Playing;
                 }
             }
-            else
+            else if(gameState == GameState.Playing)
             {
+                this.IsMouseVisible = false;
                 int screenWidth = _graphics.PreferredBackBufferWidth;
                 int screenHeight = _graphics.PreferredBackBufferHeight;
                 int tileWidth = screenWidth / tilemapWidthInTiles;
@@ -361,7 +366,7 @@ namespace TheGameGame
                     for (int x = 0; x < tilemapWidthInTiles; x++)
                     {
                         Tile tile = gameboard[y, x];
-                        if (tile != null && tile.Texture != null)
+                        if (tile?.Texture != null)
                         {
                             Rectangle destinationRectangle = new Rectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
                             _spriteBatch.Draw(tile.Texture, destinationRectangle, tile.SourceRectangle, Color.White);
@@ -382,6 +387,17 @@ namespace TheGameGame
 
                 // Draw the zombie
                 zombie.Draw(_spriteBatch);
+            }
+            else
+            {
+                victoryScreen.Draw(_spriteBatch);
+                this.IsMouseVisible = true;
+                if (victoryScreen.IsStartButtonClicked)
+                {
+                    gameState = GameState.Playing;
+                    currentLevel = 1;
+                    score = 0;
+                }
             }
 
             _spriteBatch.End();
