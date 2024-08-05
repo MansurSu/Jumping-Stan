@@ -30,6 +30,8 @@ public class Enemy
         _velocity = new Vector2(speed, 0);
     }
 
+    public Rectangle GetBoundingBox() => _boundingBox;
+
     public void Update(GameTime gameTime, Tile[,] gameboard)
     {
         _timeSinceLastFrame += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -53,8 +55,8 @@ public class Enemy
     private void HandleCollisions(Tile[,] gameboard)
     {
         // Get current tile positions
-        int x = (int)Math.Floor(_position.X / 32);
-        int y = (int)Math.Floor(_position.Y / 32);
+        int x = (int)Math.Floor(_position.X / 100);
+        int y = (int)Math.Floor(_position.Y / 60);
 
         
 

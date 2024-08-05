@@ -18,7 +18,7 @@ namespace TheGameGame
         private Texture2D flagTexture;
         private SpriteFont scoreFont;
         private StartScreen menu;
-        private WinScreen victoryScreen;
+        private WinScreen gameOverScreen;
         private GameState gameState;
 
         private readonly int tileWidth = 32;
@@ -89,7 +89,7 @@ namespace TheGameGame
             Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
             Rectangle startButtonRectangle = new (buttonX, buttonY+75, buttonWidth, buttonHeight);
             Vector2 victoryTextRectangle = new (buttonX, buttonY-75);
-            victoryScreen = new WinScreen(startButtonTexture, startButtonRectangle, victoryTextRectangle, scoreFont);
+            gameOverScreen = new WinScreen(startButtonTexture, startButtonRectangle, victoryTextRectangle, scoreFont);
         }
 
         private void InitializeGameObject()
@@ -132,9 +132,9 @@ namespace TheGameGame
             };
 
             // Initialize the zombie with a scale factor
-            Vector2 zombieStartPosition = new Vector2(100, _graphics.PreferredBackBufferHeight - 80); // Adjust as needed
-            float zombieSpeed = 1.0f; // Adjust speed as needed
-            float zombieScale = 0.11f; // Adjust scale to make the zombie smaller
+            Vector2 zombieStartPosition = new Vector2(100 + 80, _graphics.PreferredBackBufferHeight - 175); // Adjust as needed
+            const float zombieSpeed = 1.0f; // Adjust speed as needed
+            const float zombieScale = 0.1f; // Adjust scale to make the zombie smaller
             zombie = new Enemy(zombieTexture, zombieFrames, zombieStartPosition, zombieSpeed, zombieScale);
 
             InitializeGameObject();
@@ -214,8 +214,8 @@ namespace TheGameGame
 
             SetTileMap(tileMap);
 
-            int flagTileX = 1;
-            int flagTileY = 2;
+            const int flagTileX = 1;
+            const int flagTileY = 2;
             flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
         }
 
@@ -274,7 +274,9 @@ namespace TheGameGame
 
         protected override void Update(GameTime gameTime)
         {
-            if(gameState == GameState.MenuScreen)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+            if (gameState == GameState.MenuScreen)
             {
                 MouseState mouseState = Mouse.GetState();
                 menu.Update(gameTime, mouseState);
@@ -286,9 +288,6 @@ namespace TheGameGame
                     InitializeGameObject();
                     LoadLevel(currentLevel);
                 }
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                    Exit();
-
                 Vector2 position = hero.GetPositie();
                 int x = (int)Math.Floor(position.X / 100);
                 int y = (int)Math.Floor(position.Y / 60);
@@ -307,13 +306,18 @@ namespace TheGameGame
                     }
                 }
 
+                if (hero.GetBoundingBox().Intersects(zombie.GetBoundingBox()))
+                {
+                    gameState = GameState.GameOver;
+                }
+
                 if (hero.GetBoundingBox().Intersects(new Rectangle((int)flagPosition.X, (int)flagPosition.Y, (int)(flagTexture.Width * flagScale), (int)(flagTexture.Height * flagScale))))
                 {
                     currentLevel++;
                     if (currentLevel > 3)
                     {
-                        victoryScreen.Win();
-                        gameState = GameState.Win;
+                        gameOverScreen.Win();
+                        gameState = GameState.GameOver;
                     }
                     else
                     {
@@ -326,10 +330,10 @@ namespace TheGameGame
 
                 base.Update(gameTime);
             }
-            else if(gameState == GameState.Win)
+            else if(gameState == GameState.GameOver)
             {
                 MouseState mouseState = Mouse.GetState();
-                victoryScreen.Update(gameTime, mouseState);
+                gameOverScreen.Update(gameTime, mouseState);
             }
         }
 
@@ -390,9 +394,9 @@ namespace TheGameGame
             }
             else
             {
-                victoryScreen.Draw(_spriteBatch);
+                gameOverScreen.Draw(_spriteBatch);
                 this.IsMouseVisible = true;
-                if (victoryScreen.IsStartButtonClicked)
+                if (gameOverScreen.IsStartButtonClicked)
                 {
                     gameState = GameState.Playing;
                     currentLevel = 1;

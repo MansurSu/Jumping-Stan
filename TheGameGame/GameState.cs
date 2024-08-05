@@ -4,7 +4,6 @@
     {
         MenuScreen,
         Playing,
-        Win,
-        GameOver
+        GameOver,
     }
 }

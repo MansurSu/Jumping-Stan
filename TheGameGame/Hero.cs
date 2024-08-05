@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework;
 using TheGameGame.interfaces;
 using TheGameGame.Animation;
 using TheGameGame.Input;
-using System.Diagnostics;
-
 namespace TheGameGame
 {
     public class Hero : IGameObject
@@ -23,7 +21,7 @@ namespace TheGameGame
         private bool isOnGround = true;
         private bool facingRight = true; // Boolean to track the direction the hero is facing
         IInputReader inputReader;
-        private int heroSize = 90;
+        private const float scale = 0.3f;
 
         public Hero(Texture2D texture, IInputReader reader, Vector2 initialPosition)
         {
@@ -122,7 +120,7 @@ namespace TheGameGame
             SpriteEffects spriteEffects = facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             // Specify the scale factor
-            float scale = 0.3f;
+            
 
             // Calculate the origin to maintain the position
             if (currentAnimatie == null)
@@ -143,7 +141,7 @@ namespace TheGameGame
         {
             isOnGround = value;
         }
-        
+
         // public void UpdateSuroundingTiles()
         // {
         // 
@@ -151,11 +149,9 @@ namespace TheGameGame
 
         public Rectangle GetBoundingBox()
         {
-            return new Rectangle(
-                (int)positie.X,
-                (int)positie.Y,
-                (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width * 0.3f),
-                (int)(currentAnimatie.CurrentFrame.SourceRectangle.Height * 0.3f));
+            int halfWidth = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2 * scale);
+            int halfHeight = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Height / 2 * scale);
+            return new Rectangle((int)positie.X - halfWidth, (int)positie.Y - halfHeight, halfWidth * 2, halfHeight * 2);
         }
 
         public void SetPosition(Vector2 newPosition)
