@@ -13,6 +13,10 @@ public class WinScreen
     private bool isStartButtonClicked;
 
     public bool IsStartButtonClicked => isStartButtonClicked;
+    public void ResetStartButton()
+    {
+        isStartButtonClicked = false;
+    }
 
     public WinScreen(Texture2D startButtonTexture, Rectangle startButtonRectangle, Vector2 victoryTextLocation, SpriteFont font)
     {
@@ -30,8 +34,10 @@ public class WinScreen
 
     public void Update(GameTime gameTime, MouseState mouseState)
     {
+        Debug.WriteLine(1);
         if (mouseState.LeftButton == ButtonState.Pressed && startButtonRectangle.Contains(mouseState.Position))
         {
+            Debug.WriteLine(2);
             isStartButtonClicked = true;
         }
     }

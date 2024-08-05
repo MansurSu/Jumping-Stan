@@ -401,6 +401,8 @@ namespace TheGameGame
                     gameState = GameState.Playing;
                     currentLevel = 1;
                     score = 0;
+                    hero = null;
+                    gameOverScreen.ResetStartButton();
                 }
             }
 
