@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using TheGameGame;
+using System.Diagnostics;
 
 public class Enemy
 {
@@ -45,20 +46,35 @@ public class Enemy
         // Update position based on velocity
         _position += _velocity;
 
-        // Check collision with platforms and adjust position
-        HandleCollisions(gameboard);
 
         // Update bounding box
         _boundingBox = new Rectangle((int)_position.X, (int)_position.Y, (int)(_frames[_currentFrame].Width * _scale), (int)(_frames[_currentFrame].Height * _scale));
+
+        // Check collision with platforms and adjust position
+        HandleCollisions(gameboard);
     }
 
     private void HandleCollisions(Tile[,] gameboard)
     {
         // Get current tile positions
-        int x = (int)Math.Floor(_position.X / 100);
-        int y = (int)Math.Floor(_position.Y / 60);
+        int x = (int)(_boundingBox.Right / 100f) + 1;
+        int y = (int)(_boundingBox.Bottom / 60f) - 1;
+        if (_velocity.X > 0)
+        {
+            if (gameboard[x + 1, y]?.TileType == TileType.Impassable)
+            {
+                _velocity = -_velocity;
+            }
+        }
+        else
+        {
+            if (gameboard[x - 2, y]?.TileType == TileType.Impassable)
+            {
 
-        
+                _velocity = -_velocity;
+            }
+        }
+
 
         // Implement additional collision logic for left/right movement as needed
     }
