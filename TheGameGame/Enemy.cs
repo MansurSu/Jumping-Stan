@@ -17,6 +17,7 @@ public class Enemy
     private Rectangle _boundingBox;
     private Vector2 _velocity;
     private bool _isOnGround;
+    private SpriteEffects spriteEffect;
 
     public Enemy(Texture2D texture, Rectangle[] frames, Vector2 position, float speed, float scale)
     {
@@ -43,6 +44,8 @@ public class Enemy
             _currentFrame = (_currentFrame + 1) % _frames.Length;
         }
 
+        spriteEffect = _velocity.X < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+        
         // Update position based on velocity
         _position += _velocity;
 
@@ -57,20 +60,20 @@ public class Enemy
     private void HandleCollisions(Tile[,] gameboard)
     {
         // Get current tile positions
-        int x = (int)(_boundingBox.Right / 100f) + 1;
+        int xr = (int)(_boundingBox.Right / 100f);
+        int xl = (int)(_boundingBox.Left / 100f);
         int y = (int)(_boundingBox.Bottom / 60f) - 1;
         if (_velocity.X > 0)
         {
-            if (gameboard[x + 1, y]?.TileType == TileType.Impassable)
+            if (gameboard[y, xr]?.TileType == TileType.Impassable)
             {
                 _velocity = -_velocity;
             }
         }
         else
         {
-            if (gameboard[x - 2, y]?.TileType == TileType.Impassable)
+            if (gameboard[y, xl]?.TileType == TileType.Impassable)
             {
-
                 _velocity = -_velocity;
             }
         }
@@ -81,6 +84,6 @@ public class Enemy
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_texture, _position, _frames[_currentFrame], Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
+        spriteBatch.Draw(_texture, _position, _frames[_currentFrame], Color.White, 0f, Vector2.Zero, _scale, spriteEffect, 0f);
     }
 }

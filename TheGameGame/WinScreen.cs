@@ -34,10 +34,8 @@ public class WinScreen
 
     public void Update(GameTime gameTime, MouseState mouseState)
     {
-        Debug.WriteLine(1);
         if (mouseState.LeftButton == ButtonState.Pressed && startButtonRectangle.Contains(mouseState.Position))
         {
-            Debug.WriteLine(2);
             isStartButtonClicked = true;
         }
     }

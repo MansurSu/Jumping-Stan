@@ -22,12 +22,12 @@ namespace TheGameGame
             this.frameTime = frameTime;
             this.frames = new List<Rectangle>
             {
-                new Rectangle(0, 0, 171, 171),
-                new Rectangle(171, 0, 171, 171),
-                new Rectangle(342, 0, 171, 171),
-                new Rectangle(513, 0, 171, 171),
-                //new Rectangle(684, 0, 171, 171),
-                //new Rectangle(855, 0, 171, 171)
+                new Rectangle(0, 0, 190, 170),
+                new Rectangle(190, 0, 190, 170),
+                new Rectangle(380, 0, 190, 170),
+                new Rectangle(570, 0, 190, 170),
+                new Rectangle(760, 0, 190, 170),
+                new Rectangle(950, 0, 190, 170)
             };
         }
 
