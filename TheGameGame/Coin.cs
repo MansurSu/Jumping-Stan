@@ -56,9 +56,9 @@ namespace TheGameGame
                 (int)(frames[currentFrame].Height * scale));
         }
 
-        public bool IsCollected(Hero hero)
+        public bool IsCollected(Rectangle hero)
         {
-            return GetBoundingBox().Intersects(hero.GetBoundingBox());
+            return GetBoundingBox().Intersects(hero);
         }
     }
 }

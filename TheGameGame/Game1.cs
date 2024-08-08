@@ -276,7 +276,7 @@ namespace TheGameGame
             for (int i = coins.Count - 1; i >= 0; i--)
             {
                 coins[i].Update(gameTime);
-                if (coins[i].IsCollected(hero))
+                if (coins[i].IsCollected(hero.GetBoundingBox()))
                 {
                     coins.RemoveAt(i);
                     score += 10;

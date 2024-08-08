@@ -37,6 +37,7 @@ namespace TheGameGame
             positie = initialPosition;
             snelheid = new Vector2(6, 0); // Horizontal speed
             this.inputReader = reader;
+            currentAnimatie = idleAnimatie;
         }
 
         public void Update(GameTime gameTime)
@@ -123,10 +124,6 @@ namespace TheGameGame
             
 
             // Calculate the origin to maintain the position
-            if (currentAnimatie == null)
-            {
-                currentAnimatie = idleAnimatie;
-            }
             Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
 
             spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);

@@ -16,6 +16,7 @@ public class WinScreen
     public void ResetStartButton()
     {
         isStartButtonClicked = false;
+        didWin = true;
     }
 
     public WinScreen(Texture2D startButtonTexture, Rectangle startButtonRectangle, Vector2 victoryTextLocation, SpriteFont font)
@@ -24,12 +25,12 @@ public class WinScreen
         this.startButtonRectangle = startButtonRectangle;
         this.victoryTextLocation = victoryTextLocation;
         this.font = font;
-        didWin = false;
+        didWin = true;
     }
 
-    public void Win()
+    public void Died()
     {
-        didWin = true;
+        didWin = false;
     }
 
     public void Update(GameTime gameTime, MouseState mouseState)
