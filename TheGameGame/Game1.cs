@@ -76,8 +76,9 @@ namespace TheGameGame
             };
 
             // Initialize the zombie with a scale factor
-            Vector2 zombieStartPosition = new Vector2(100, _graphics.PreferredBackBufferHeight - 80); // Adjust as needed
-            float zombieSpeed = 1.0f; // Adjust speed as needed
+            Vector2 zombieStartPosition = new(100, _graphics.PreferredBackBufferHeight - 80); // Adjust as needed
+            Vector2 zombieSpeed = new(1.0f, 0); // Adjust speed as needed
+
             float zombieScale = 0.11f; // Adjust scale to make the zombie smaller
             zombie = new Enemy(zombieTexture, zombieFrames, zombieStartPosition, zombieSpeed, zombieScale);
 

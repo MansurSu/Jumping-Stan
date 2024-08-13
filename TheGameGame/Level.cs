@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Reflection.Metadata;
+using System.Windows.Forms;
 
 
 namespace TheGameGame
@@ -64,11 +66,6 @@ namespace TheGameGame
         private void LoadLevel1()
         {
             coins = new();
-            Rectangle tile1Rect = new(10, 0, 75, 64);
-            Rectangle tile2Rect = new(96, 96, 32, 32);
-            Rectangle tile3Rect = new(0, 0, 96, 64);
-            Rectangle tile4Rect = new(10, 32, 74, 55);
-
             int[,] tileMap = new int[,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -99,27 +96,21 @@ namespace TheGameGame
             // Assuming the sprite sheet is 2618x1157 with 3 images (adjust accordingly)
             Rectangle[] zombieFrames = new Rectangle[]
             {
-                 new Rectangle(0, 0, 872, 1157), // Adjust these rectangles based on actual sprite positions
-                 new Rectangle(872, 0, 872, 1157),
-                 new Rectangle(1744, 0, 872, 1157)
+                 new (0, 0, 872, 1157), // Adjust these rectangles based on actual sprite positions
+                 new (872, 0, 872, 1157),
+                 new (1744, 0, 872, 1157)
             };
 
             // Initialize the zombie with a scale factor
-            Vector2 zombieStartPosition = new(180, 305); // Adjust as needed
-            const float zombieSpeed = 1.0f; // Adjust speed as needed
+            Vector2 zombieStartPosition = new(180, 304); // Adjust as needed
+            Vector2 zombieSpeed = new(1.0f, 0); // Adjust speed as needed
             const float zombieScale = 0.1f; // Adjust scale to make the zombie smaller
             enemy = new(zombieTexture, zombieFrames, zombieStartPosition, zombieSpeed, zombieScale);
-
         }
 
         private void LoadLevel2()
         {
             coins = new();
-            Rectangle tile1Rect = new(10, 0, 75, 64);
-            Rectangle tile2Rect = new(96, 96, 32, 32);
-            Rectangle tile3Rect = new(0, 0, 96, 64);
-            Rectangle tile4Rect = new(10, 32, 74, 55);
-
             int[,] tileMap = new int[,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -143,17 +134,26 @@ namespace TheGameGame
             coins.Add(new Coin(coinTexture, new Vector2(320, 380), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(370, 380), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(420, 380), coinScale, coinFrameTime));
-            enemy = null;
+            Texture2D pterodactylTexture = content.Load<Texture2D>("enemy2"); // Load the zombie sprite sheet
+
+
+            // Assuming the sprite sheet is 2618x1157 with 3 images (adjust accordingly)
+            Rectangle[] pterodactylFrames = new Rectangle[]
+            {
+                 new (0, 0, 1414, 1482), // Adjust these rectangles based on actual sprite positions
+                 new (1414, 0, 1414, 1482),
+            };
+
+            // Initialize the zombie with a scale factor
+            Vector2 pterodactylStartPosition = new(350, 304); // Adjust as needed
+            Vector2 pterodactylSpeed = new(0, 1.0f); // Adjust speed as needed
+            const float pterodactylScale = 0.05f; // Adjust scale to make the zombie smaller
+            enemy = new(pterodactylTexture, pterodactylFrames, pterodactylStartPosition, pterodactylSpeed, pterodactylScale);
         }
 
         private void LoadLevel3()
         {
             coins = new();
-            Rectangle tile1Rect = new Rectangle(10, 0, 75, 64);
-            Rectangle tile2Rect = new Rectangle(96, 96, 32, 32);
-            Rectangle tile3Rect = new Rectangle(0, 0, 96, 64);
-            Rectangle tile4Rect = new Rectangle(10, 32, 74, 55);
-
             int[,] tileMap = new int[,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -174,7 +174,22 @@ namespace TheGameGame
             coins.Add(new Coin(coinTexture, new Vector2(50, 100), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(300, 150), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(700, 200), coinScale, coinFrameTime));
-            enemy = null;
+            Texture2D beetleTexture = content.Load<Texture2D>("enemy3"); // Load the zombie sprite sheet
+
+
+            // Assuming the sprite sheet is 2618x1157 with 3 images (adjust accordingly)
+            Rectangle[] beetleFrames = new Rectangle[]
+            {
+                 new (0, 0, 1171, 725), // Adjust these rectangles based on actual sprite positions
+                 new (1171, 0, 1171, 725),
+                 new (2342, 0, 1171, 725)
+            };
+
+            // Initialize the zombie with a scale factor
+            Vector2 beetleStartPosition = new(400, 383); // Adjust as needed
+            Vector2 beetleSpeed = new(2.0f, 0); // Adjust speed as needed
+            const float beetleScale = 0.05f; // Adjust scale to make the zombie smaller
+            enemy = new(beetleTexture, beetleFrames, beetleStartPosition, beetleSpeed, beetleScale);
         }
         private void SetTileMap(int[,] tileMap)
         {
@@ -219,6 +234,7 @@ namespace TheGameGame
                 }
                 else
                 {
+                    // if won finished level
                     LoadCurrentLevel();
                     return State.FinishedLevel;
                 }
@@ -264,6 +280,10 @@ namespace TheGameGame
 
             // Draw the zombie
             enemy?.Draw(spriteBatch);
+
+            // debug boundingbox
+            // Texture2D black = content.Load<Texture2D>("black");
+            // spriteBatch.Draw(black, enemy.GetBoundingBox(), Color.White);
         }
         public enum State
         {

@@ -4,11 +4,14 @@ using Microsoft.Xna.Framework;
 using TheGameGame.interfaces;
 using TheGameGame.Animation;
 using TheGameGame.Input;
+using System;
+using System.Diagnostics;
 namespace TheGameGame
 {
     public class Hero : IGameObject
     {
         Texture2D heroTexture;
+        Texture2D debug;
         Animatie runAnimatie;
         Animatie idleAnimatie;
         Animatie jumpAnimatie;
@@ -38,6 +41,23 @@ namespace TheGameGame
             snelheid = new Vector2(6, 0); // Horizontal speed
             this.inputReader = reader;
             currentAnimatie = idleAnimatie;
+        }
+        public Hero(Texture2D texture, IInputReader reader, Vector2 initialPosition, Texture2D debug)
+        {
+            heroTexture = texture;
+            jumpAnimatie = new Animatie();
+            jumpAnimatie.AddFrame(new AnimationFrame(new Rectangle(900, 0, 300, 300)));
+            idleAnimatie = new Animatie();
+            idleAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 0, 300, 300)));
+            runAnimatie = new Animatie();
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(0, 300, 300, 300)));
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
+            runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
+            positie = initialPosition;
+            snelheid = new Vector2(6, 0); // Horizontal speed
+            this.inputReader = reader;
+            currentAnimatie = idleAnimatie;
+            this.debug = debug;
         }
 
         public void Update(GameTime gameTime)
@@ -127,6 +147,9 @@ namespace TheGameGame
             Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
 
             spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);
+            
+            // debug boundingbox
+            // spriteBatch.Draw(debug, GetBoundingBox(), Color.White);
         }
 
         public Vector2 GetPositie()
@@ -146,7 +169,7 @@ namespace TheGameGame
 
         public Rectangle GetBoundingBox()
         {
-            int halfWidth = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2 * scale);
+            int halfWidth = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width / 4 * scale);
             int halfHeight = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Height / 2 * scale);
             return new Rectangle((int)positie.X - halfWidth, (int)positie.Y - halfHeight, halfWidth * 2, halfHeight * 2);
         }

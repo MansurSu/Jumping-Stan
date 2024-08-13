@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using System;
 using TheGameGame;
 using System.Diagnostics;
+using System.Collections.Generic;
+using SharpDX.Direct3D9;
 
 public class Enemy
 {
@@ -16,20 +18,19 @@ public class Enemy
     private float _frameInterval;
     private Rectangle _boundingBox;
     private Vector2 _velocity;
-    private bool _isOnGround;
     private SpriteEffects spriteEffect;
 
-    public Enemy(Texture2D texture, Rectangle[] frames, Vector2 position, float speed, float scale)
+    public Enemy(Texture2D texture, Rectangle[] frames, Vector2 position, Vector2 velocity, float scale)
     {
         _texture = texture;
         _frames = frames;
         _position = position;
-        _speed = speed;
+        _speed = velocity.X;
         _scale = scale;
         _currentFrame = 0;
         _timeSinceLastFrame = 0;
         _frameInterval = 0.1f; // Example interval
-        _velocity = new Vector2(speed, 0);
+        _velocity = velocity;
     }
 
     public Rectangle GetBoundingBox() => _boundingBox;
@@ -60,26 +61,43 @@ public class Enemy
     private void HandleCollisions(Tile[,] gameboard)
     {
         // Get current tile positions
-        int xr = (int)(_boundingBox.Right / 100f);
-        int xl = (int)(_boundingBox.Left / 100f);
-        int y = (int)(_boundingBox.Bottom / 60f) - 1;
+        int xr = (int)(_boundingBox.Right / 100f);  // x right
+        int xl = (int)(_boundingBox.Left / 100f);   // x left
+        int x = (int)(_position.X / 100);           // x center
+        int yb = (int)(_boundingBox.Bottom / 60f);  // y bottom
+        int yt = (int)(_boundingBox.Top / 60f);     // y top
         if (_velocity.X > 0)
         {
-            if (gameboard[y, xr]?.TileType == TileType.Impassable)
+            // obstacle on right
+            if (gameboard[yb, xr]?.TileType == TileType.Impassable)
+            {
+                _velocity = -_velocity;
+            }
+        }
+        else if (_velocity.X < 0)
+        {
+            // obstacle on left
+            if (gameboard[yb, xl]?.TileType == TileType.Impassable)
+            {
+                _velocity = -_velocity;
+            }
+        }
+        else if (_velocity.Y > 0)
+        {
+            // obstacle below
+            if (gameboard[yb + 1, x]?.TileType == TileType.Impassable)
             {
                 _velocity = -_velocity;
             }
         }
         else
         {
-            if (gameboard[y, xl]?.TileType == TileType.Impassable)
+            // top of screen
+            if (yt < 1)
             {
                 _velocity = -_velocity;
             }
         }
-
-
-        // Implement additional collision logic for left/right movement as needed
     }
 
     public void Draw(SpriteBatch spriteBatch)

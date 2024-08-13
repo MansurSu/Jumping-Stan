@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 using TheGameGame.Input;
 using static TheGameGame.Level;
 
@@ -74,7 +75,8 @@ namespace TheGameGame
         {
             const float initialX = 21;
             float initialY = _graphics.PreferredBackBufferHeight - 90;
-            hero = new Hero(heroTexture, new KeyBoardreader(), new Vector2(initialX, initialY));
+            Texture2D debug = Content.Load<Texture2D>("black");
+            hero = new Hero(heroTexture, new KeyBoardreader(), new Vector2(initialX, initialY), debug);
         }
 
         protected override void Update(GameTime gameTime)
@@ -156,6 +158,7 @@ namespace TheGameGame
             else
             {
                 gameOverScreen.Draw(_spriteBatch);
+                _spriteBatch.DrawString(scoreFont, "Score: " + level.Score(), new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
                 this.IsMouseVisible = true;
                 if (gameOverScreen.IsStartButtonClicked)
                 {
