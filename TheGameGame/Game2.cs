@@ -67,9 +67,10 @@ namespace TheGameGame
             int buttonY = (GraphicsDevice.Viewport.Height - buttonHeight) / 2;
             Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
             Texture2D gameOverTexture = Content.Load<Texture2D>("GameOver");
+            Texture2D winTexture = Content.Load<Texture2D>("WinScreen");
             Rectangle startButtonRectangle = new (buttonX, buttonY+75, buttonWidth, buttonHeight);
             Vector2 victoryTextRectangle = new (buttonX, buttonY-75);
-            gameOverScreen = new WinScreen(startButtonTexture, startButtonRectangle, victoryTextRectangle, scoreFont, gameOverTexture);
+            gameOverScreen = new WinScreen(startButtonTexture, startButtonRectangle, scoreFont, gameOverTexture, winTexture);
         }
 
         private void InitializeGameObject()

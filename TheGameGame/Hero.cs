@@ -18,6 +18,8 @@ namespace TheGameGame
         Animatie currentAnimatie;
         private Vector2 positie;
         private Vector2 snelheid;
+        private float acceleratie = 0.2f;
+        private float maximumSnelheid = 6;
         private float gravity = 0.5f;
         private float jumpStrength = -10f;
         private bool isJumping = false;
@@ -54,7 +56,7 @@ namespace TheGameGame
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(300, 300, 300, 300)));
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
             positie = initialPosition;
-            snelheid = new Vector2(6, 0); // Horizontal speed
+            snelheid = new Vector2(0, 0); // Horizontal speed
             this.inputReader = reader;
             currentAnimatie = idleAnimatie;
             this.debug = debug;
@@ -74,8 +76,37 @@ namespace TheGameGame
                 facingRight = true;
             }
 
+            if (direction.X != 0)
+            {
+                snelheid.X += direction.X * acceleratie;
+            }
+            else
+            {
+                if (Math.Abs(snelheid.X)< acceleratie)
+                {
+                    snelheid.X = 0;
+                }
+                else if (snelheid.X > 0)
+                {
+                    snelheid.X -= acceleratie;
+                }
+                else if(snelheid.X < 0)
+                {
+                    snelheid.X += acceleratie;
+                }
+            }
+
+            if(snelheid.X > maximumSnelheid)
+            {
+                snelheid.X = maximumSnelheid;
+            }
+            else if(snelheid.X < -maximumSnelheid)
+            {
+                snelheid.X = -maximumSnelheid;
+            }
             // Horizontal movement
-            positie.X += direction.X * snelheid.X;
+            positie.X += snelheid.X;
+            Debug.WriteLine(snelheid.X);
 
             // Apply gravity only if not on the ground
             if (!isOnGround)

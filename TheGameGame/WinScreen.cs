@@ -2,12 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct2D1.Effects;
-using System.Diagnostics;
 public class WinScreen
 {
     private Texture2D startButtonTexture;
     private Texture2D gameOverTexture;
+    private Texture2D winTexture;
     private Rectangle startButtonRectangle;
     private Vector2 victoryTextLocation;
     private SpriteFont font;
@@ -21,14 +20,14 @@ public class WinScreen
         didWin = true;
     }
 
-    public WinScreen(Texture2D startButtonTexture, Rectangle startButtonRectangle, Vector2 victoryTextLocation, SpriteFont font, Texture2D gameOverTexture)
+    public WinScreen(Texture2D startButtonTexture, Rectangle startButtonRectangle, SpriteFont font, Texture2D gameOverTexture, Texture2D winTexture)
     {
         this.startButtonTexture = startButtonTexture;
         this.startButtonRectangle = startButtonRectangle;
-        this.victoryTextLocation = victoryTextLocation;
         this.font = font;
         didWin = true;
         this.gameOverTexture = gameOverTexture;
+        this.winTexture = winTexture;
     }
 
     public void Died()
@@ -49,7 +48,9 @@ public class WinScreen
         string victoryText = didWin ? "Victory" : "Defeat";
         if (didWin)
         {
-            spriteBatch.DrawString(font, "Victory", victoryTextLocation, Color.Black);
+            const float scale = 0.5f;
+            Rectangle winRectangle = new((int)(400 - (winTexture.Width * scale) / 2), 0, (int)(winTexture.Width * scale), (int)(winTexture.Height * scale));
+            spriteBatch.Draw(winTexture, winRectangle, new(0, 0, winTexture.Width, winTexture.Height), Color.White);
         }
         else
         {
