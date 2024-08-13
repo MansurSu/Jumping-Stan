@@ -6,7 +6,8 @@ using TheGameGame.Animation;
 using TheGameGame.Input;
 using System;
 using System.Diagnostics;
-namespace TheGameGame
+using TheGameGame.Entities;
+namespace TheGameGame.entities
 {
     public class Hero : IGameObject
     {
@@ -41,7 +42,7 @@ namespace TheGameGame
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
             positie = initialPosition;
             snelheid = new Vector2(6, 0); // Horizontal speed
-            this.inputReader = reader;
+            inputReader = reader;
             currentAnimatie = idleAnimatie;
         }
         public Hero(Texture2D texture, IInputReader reader, Vector2 initialPosition, Texture2D debug)
@@ -57,7 +58,7 @@ namespace TheGameGame
             runAnimatie.AddFrame(new AnimationFrame(new Rectangle(600, 300, 300, 300)));
             positie = initialPosition;
             snelheid = new Vector2(0, 0); // Horizontal speed
-            this.inputReader = reader;
+            inputReader = reader;
             currentAnimatie = idleAnimatie;
             this.debug = debug;
         }
@@ -82,7 +83,7 @@ namespace TheGameGame
             }
             else
             {
-                if (Math.Abs(snelheid.X)< acceleratie)
+                if (Math.Abs(snelheid.X) < acceleratie)
                 {
                     snelheid.X = 0;
                 }
@@ -90,17 +91,17 @@ namespace TheGameGame
                 {
                     snelheid.X -= acceleratie;
                 }
-                else if(snelheid.X < 0)
+                else if (snelheid.X < 0)
                 {
                     snelheid.X += acceleratie;
                 }
             }
 
-            if(snelheid.X > maximumSnelheid)
+            if (snelheid.X > maximumSnelheid)
             {
                 snelheid.X = maximumSnelheid;
             }
-            else if(snelheid.X < -maximumSnelheid)
+            else if (snelheid.X < -maximumSnelheid)
             {
                 snelheid.X = -maximumSnelheid;
             }
@@ -131,7 +132,7 @@ namespace TheGameGame
 
             if (isOnGround && snelheid.Y >= 0)
             {
-                positie.Y = (float)System.Math.Floor(positie.Y / 60) * 60 + 15;
+                positie.Y = (float)Math.Floor(positie.Y / 60) * 60 + 15;
                 snelheid.Y = 0;
                 isJumping = false;
             }
@@ -163,7 +164,7 @@ namespace TheGameGame
             // Check horizontal boundaries and keep the hero within bounds
             if (positie.X > 799 - 22) positie.X = 799 - 22;
             if (positie.X < 0) positie.X = 0;
-            
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -172,13 +173,13 @@ namespace TheGameGame
             SpriteEffects spriteEffects = facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             // Specify the scale factor
-            
+
 
             // Calculate the origin to maintain the position
             Vector2 origin = new Vector2(currentAnimatie.CurrentFrame.SourceRectangle.Width / 2, currentAnimatie.CurrentFrame.SourceRectangle.Height / 2);
 
             spriteBatch.Draw(heroTexture, positie, currentAnimatie.CurrentFrame.SourceRectangle, Color.White, 0, origin, scale, spriteEffects, 0);
-            
+
             // debug boundingbox
             // spriteBatch.Draw(debug, GetBoundingBox(), Color.White);
         }
@@ -203,14 +204,14 @@ namespace TheGameGame
         public void CheckCollisions(Tile[,] gameboard)
         {
             Rectangle position = GetBoundingBox();
-            int yb = position.Bottom/60; // y bottom
-            int yt = position.Top/60;    // y top
-            int xl = position.Left/100;  // x left
-            int xr = position.Right/100; // x right
+            int yb = position.Bottom / 60; // y bottom
+            int yt = position.Top / 60;    // y top
+            int xl = position.Left / 100;  // x left
+            int xr = position.Right / 100; // x right
             isOnGround = gameboard[yb, xl]?.TileType == TileType.Impassable || gameboard[yb, xr]?.TileType == TileType.Impassable || gameboard[yb, xl]?.TileType == TileType.Platform || gameboard[yb, xr]?.TileType == TileType.Platform;
-            if(snelheid.X > 0)
+            if (snelheid.X > 0)
             {
-                if (gameboard[yt + 1,xr]?.TileType == TileType.Impassable)
+                if (gameboard[yt + 1, xr]?.TileType == TileType.Impassable)
                 {
                     snelheid.X = -snelheid.X;
                 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TheGameGame
+namespace TheGameGame.Entities
 {
     public class Flag
     {
@@ -13,7 +13,7 @@ namespace TheGameGame
         {
             this.texture = texture;
             this.position = position;
-            this.boundingBox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            boundingBox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
         public void Draw(SpriteBatch spriteBatch)

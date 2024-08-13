@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
-namespace TheGameGame
+namespace TheGameGame.entities
 {
     public class Coin
     {
@@ -20,7 +20,7 @@ namespace TheGameGame
             this.position = position;
             this.scale = scale;
             this.frameTime = frameTime;
-            this.frames = new List<Rectangle>
+            frames = new List<Rectangle>
             {
                 new Rectangle(0, 0, 190, 170),
                 new Rectangle(190, 0, 190, 170),

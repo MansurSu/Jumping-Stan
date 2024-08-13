@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection.Metadata;
 using System.Windows.Forms;
+using TheGameGame.entities;
+using TheGameGame.Entities;
 
 
-namespace TheGameGame
+namespace TheGameGame.Constrollers
 {
     public class Level
     {
@@ -82,7 +84,7 @@ namespace TheGameGame
 
             const int flagTileX = 0;
             const int flagTileY = 1;
-            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+            flagPosition = new Vector2(flagTileX * tileWidth, flagTileY * tileHeight - flagTexture.Height / 2);
             coins.Add(new Coin(coinTexture, new Vector2(150, 300), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(250, 380), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(300, 380), coinScale, coinFrameTime));
@@ -91,7 +93,7 @@ namespace TheGameGame
             coins.Add(new Coin(coinTexture, new Vector2(500, 300), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(750, 250), coinScale, coinFrameTime));
             Texture2D zombieTexture = content.Load<Texture2D>("enemy1"); // Load the zombie sprite sheet
-            
+
 
             // Assuming the sprite sheet is 2618x1157 with 3 images (adjust accordingly)
             Rectangle[] zombieFrames = new Rectangle[]
@@ -127,7 +129,7 @@ namespace TheGameGame
 
             const int flagTileX = 0;
             const int flagTileY = 1;
-            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+            flagPosition = new Vector2(flagTileX * tileWidth, flagTileY * tileHeight - flagTexture.Height / 2);
             coins.Add(new Coin(coinTexture, new Vector2(100, 250), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(200, 250), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(300, 250), coinScale, coinFrameTime));
@@ -170,7 +172,7 @@ namespace TheGameGame
 
             const int flagTileX = 0;
             const int flagTileY = 1;
-            flagPosition = new Vector2(flagTileX * tileWidth, (flagTileY * tileHeight) - flagTexture.Height / 2);
+            flagPosition = new Vector2(flagTileX * tileWidth, flagTileY * tileHeight - flagTexture.Height / 2);
             coins.Add(new Coin(coinTexture, new Vector2(50, 100), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(300, 150), coinScale, coinFrameTime));
             coins.Add(new Coin(coinTexture, new Vector2(700, 200), coinScale, coinFrameTime));

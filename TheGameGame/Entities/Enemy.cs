@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;
-using TheGameGame;
 using System.Diagnostics;
 using System.Collections.Generic;
 using SharpDX.Direct3D9;
+using TheGameGame.Entities;
 
 public class Enemy
 {

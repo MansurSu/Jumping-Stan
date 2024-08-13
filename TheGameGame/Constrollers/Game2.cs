@@ -2,10 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using TheGameGame.entities;
+using TheGameGame.Entities;
 using TheGameGame.Input;
-using static TheGameGame.Level;
+using static TheGameGame.Constrollers.Level;
 
-namespace TheGameGame
+namespace TheGameGame.Constrollers
 {
     public class Game2 : Game
     {
@@ -57,7 +59,7 @@ namespace TheGameGame
             int buttonX = (GraphicsDevice.Viewport.Width - buttonWidth) / 2;
             int buttonY = (GraphicsDevice.Viewport.Height - buttonHeight) / 2;
             Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
-            Rectangle startButtonRectangle = new (buttonX, buttonY, buttonWidth, buttonHeight);
+            Rectangle startButtonRectangle = new(buttonX, buttonY, buttonWidth, buttonHeight);
             menu = new StartScreen(startButtonTexture, startButtonRectangle);
             LoadVictoryScreen();
         }
@@ -71,8 +73,8 @@ namespace TheGameGame
             Texture2D startButtonTexture = Content.Load<Texture2D>("StartButton");
             Texture2D gameOverTexture = Content.Load<Texture2D>("GameOver");
             Texture2D winTexture = Content.Load<Texture2D>("WinScreen");
-            Rectangle startButtonRectangle = new (buttonX, buttonY+75, buttonWidth, buttonHeight);
-            Vector2 victoryTextRectangle = new (buttonX, buttonY-75);
+            Rectangle startButtonRectangle = new(buttonX, buttonY + 75, buttonWidth, buttonHeight);
+            Vector2 victoryTextRectangle = new(buttonX, buttonY - 75);
             gameOverScreen = new WinScreen(startButtonTexture, startButtonRectangle, scoreFont, gameOverTexture, winTexture);
         }
 
@@ -93,9 +95,9 @@ namespace TheGameGame
                 MouseState mouseState = Mouse.GetState();
                 menu.Update(gameTime, mouseState);
             }
-            else if(gameState == GameState.Playing)
+            else if (gameState == GameState.Playing)
             {
-                if(hero == null)
+                if (hero == null)
                 {
                     InitializeGameObject();
                     level.LoadCurrentLevel();
@@ -110,18 +112,19 @@ namespace TheGameGame
                 {
                     gameOverScreen.Died();
                     gameState = GameState.GameOver;
-                } else if (state == State.FinishedGame)
+                }
+                else if (state == State.FinishedGame)
                 {
                     gameState = GameState.GameOver;
                 }
-                else if(state == State.FinishedLevel)
+                else if (state == State.FinishedLevel)
                 {
                     InitializeGameObject();
                 }
 
                 base.Update(gameTime);
             }
-            else if(gameState == GameState.GameOver)
+            else if (gameState == GameState.GameOver)
             {
                 MouseState mouseState = Mouse.GetState();
                 gameOverScreen.Update(gameTime, mouseState);
@@ -142,15 +145,15 @@ namespace TheGameGame
             {
                 // Teken de achtergrondafbeelding op het hele scherm
                 menu.Draw(_spriteBatch);
-                this.IsMouseVisible = true;
+                IsMouseVisible = true;
                 if (menu.IsStartButtonClicked)
                 {
                     gameState = GameState.Playing;
                 }
             }
-            else if(gameState == GameState.Playing)
+            else if (gameState == GameState.Playing)
             {
-                this.IsMouseVisible = false;
+                IsMouseVisible = false;
                 level.Draw(_spriteBatch, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
                 _spriteBatch.DrawString(scoreFont, "Score: " + level.Score(), new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
                 hero.Draw(_spriteBatch);
@@ -159,7 +162,7 @@ namespace TheGameGame
             {
                 gameOverScreen.Draw(_spriteBatch);
                 _spriteBatch.DrawString(scoreFont, "Score: " + level.Score(), new Vector2(_graphics.PreferredBackBufferWidth - 150, 10), Color.Black);
-                this.IsMouseVisible = true;
+                IsMouseVisible = true;
                 if (gameOverScreen.IsStartButtonClicked)
                 {
                     level = new(Content);
