@@ -102,9 +102,9 @@ namespace TheGameGame
             };
 
             // Initialize the zombie with a scale factor
-            Vector2 zombieStartPosition = new(180, 304); // Adjust as needed
+            Vector2 zombieStartPosition = new(180, 327); // Adjust as needed
             Vector2 zombieSpeed = new(1.0f, 0); // Adjust speed as needed
-            const float zombieScale = 0.1f; // Adjust scale to make the zombie smaller
+            const float zombieScale = 0.08f; // Adjust scale to make the zombie smaller
             enemy = new(zombieTexture, zombieFrames, zombieStartPosition, zombieSpeed, zombieScale);
         }
 
@@ -187,7 +187,7 @@ namespace TheGameGame
 
             // Initialize the zombie with a scale factor
             Vector2 beetleStartPosition = new(400, 383); // Adjust as needed
-            Vector2 beetleSpeed = new(2.0f, 0); // Adjust speed as needed
+            Vector2 beetleSpeed = new(4.0f, 0); // Adjust speed as needed
             const float beetleScale = 0.05f; // Adjust scale to make the zombie smaller
             enemy = new(beetleTexture, beetleFrames, beetleStartPosition, beetleSpeed, beetleScale);
         }

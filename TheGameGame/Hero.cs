@@ -161,7 +161,7 @@ namespace TheGameGame
             currentAnimatie.Update(gameTime);
 
             // Check horizontal boundaries and keep the hero within bounds
-            if (positie.X > 799 - 20) positie.X = 799 - 20;
+            if (positie.X > 799 - 22) positie.X = 799 - 22;
             if (positie.X < 0) positie.X = 0;
             
         }
@@ -188,16 +188,6 @@ namespace TheGameGame
             return positie;
         }
 
-        public void UpdateIsOnGround(bool value)
-        {
-            isOnGround = value;
-        }
-
-        // public void UpdateSuroundingTiles()
-        // {
-        // 
-        // }
-
         public Rectangle GetBoundingBox()
         {
             int halfWidth = (int)(currentAnimatie.CurrentFrame.SourceRectangle.Width / 4 * scale);
@@ -208,6 +198,30 @@ namespace TheGameGame
         public void SetPosition(Vector2 newPosition)
         {
             positie = newPosition;
+        }
+
+        public void CheckCollisions(Tile[,] gameboard)
+        {
+            Rectangle position = GetBoundingBox();
+            int yb = position.Bottom/60; // y bottom
+            int yt = position.Top/60;    // y top
+            int xl = position.Left/100;  // x left
+            int xr = position.Right/100; // x right
+            isOnGround = gameboard[yb, xl]?.TileType == TileType.Impassable || gameboard[yb, xr]?.TileType == TileType.Impassable || gameboard[yb, xl]?.TileType == TileType.Platform || gameboard[yb, xr]?.TileType == TileType.Platform;
+            if(snelheid.X > 0)
+            {
+                if (gameboard[yt + 1,xr]?.TileType == TileType.Impassable)
+                {
+                    snelheid.X = -snelheid.X;
+                }
+            }
+            else if (snelheid.X < 0)
+            {
+                if (gameboard[yt + 1, xl]?.TileType == TileType.Impassable)
+                {
+                    snelheid.X = -snelheid.X;
+                }
+            }
         }
     }
 }

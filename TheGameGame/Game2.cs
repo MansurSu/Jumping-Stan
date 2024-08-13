@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
-using System.Reflection.Metadata;
+using Microsoft.Xna.Framework.Media;
 using TheGameGame.Input;
 using static TheGameGame.Level;
 
@@ -21,6 +19,7 @@ namespace TheGameGame
         private Texture2D backgroundTexture;
         private Hero hero;
         private Level level;
+        private Song backgroundMusic;
 
         public Game2()
         {
@@ -44,11 +43,15 @@ namespace TheGameGame
             backgroundTexture = Content.Load<Texture2D>("BG");
             heroTexture = Content.Load<Texture2D>("SpriteSheet");
             scoreFont = Content.Load<SpriteFont>("ScoreFont");
+            backgroundMusic = Content.Load<Song>("BackGroundMusic");
             LoadMenu();
         }
 
         private void LoadMenu()
         {
+            MediaPlayer.Play(backgroundMusic);  // Starts playing the song.
+            MediaPlayer.IsRepeating = true;     // Ensures that the song loops automatically after it ends, so there’s no gap between the end of the song and the restart.
+            MediaPlayer.Volume = 0.5f;          // Controls the volume of the background music.Adjust this as needed
             const int buttonWidth = 200;
             const int buttonHeight = 200;
             int buttonX = (GraphicsDevice.Viewport.Width - buttonWidth) / 2;
@@ -75,7 +78,7 @@ namespace TheGameGame
 
         private void InitializeGameObject()
         {
-            const float initialX = 21;
+            const float initialX = 50;
             float initialY = _graphics.PreferredBackBufferHeight - 90;
             Texture2D debug = Content.Load<Texture2D>("black");
             hero = new Hero(heroTexture, new KeyBoardreader(), new Vector2(initialX, initialY), debug);
@@ -98,13 +101,8 @@ namespace TheGameGame
                     level.LoadCurrentLevel();
                 }
                 State state = level.Update(gameTime, hero.GetBoundingBox());
-                Vector2 position = hero.GetPositie();
-                int x = (int)Math.Floor(position.X / 100);
-                int y = (int)Math.Floor(position.Y / 60);
                 Tile[,] gameboard = level.Gameboard();
-                bool isOnGround = gameboard[y + 1, x]?.TileType == TileType.Impassable || gameboard[y + 1, x]?.TileType == TileType.Platform;
-
-                hero.UpdateIsOnGround(isOnGround);
+                hero.CheckCollisions(gameboard);
                 hero.Update(gameTime);
 
 
