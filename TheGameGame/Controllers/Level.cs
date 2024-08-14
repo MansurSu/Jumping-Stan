@@ -28,19 +28,21 @@ namespace TheGameGame.Constrollers
         private Texture2D coinTexture;
         private const float coinScale = 0.12f;
         private const double coinFrameTime = 0.1;
-        private int score;
+        private ScoreManager score;
         private Enemy enemy;
         private const float flagScale = 2.2f;
 
         public Tile[,] Gameboard() => gameboard;
 
-        public int Score() => score;
+        public int Score() => score.GetScore();
 
         public Level(ContentManager content)
         {
             this.content = content;
             LoadContent();
             currentLevel = 1;
+            score = ScoreManager.Instance;
+            score.Reset();
         }
 
         private void LoadContent()
@@ -222,7 +224,7 @@ namespace TheGameGame.Constrollers
                 if (coins[i].IsCollected(heroHitbox))
                 {
                     coins.RemoveAt(i);
-                    score += 10;
+                    score.AddPoints(10);
                 }
             }
             Rectangle flagHitbox = new Rectangle((int)flagPosition.X, (int)flagPosition.Y, (int)(flagTexture.Width * flagScale), (int)(flagTexture.Height * flagScale));

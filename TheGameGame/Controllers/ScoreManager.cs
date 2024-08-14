@@ -8,16 +8,42 @@ namespace TheGameGame.Constrollers
 {
     public class ScoreManager
     {
-        public int Score { get; private set; }
+        private static ScoreManager instance = null;  // Statische instantie van de klasse
+        private int score;
 
-        public ScoreManager()
+        // Privé constructor om instantiatie van buitenaf te voorkomen
+        private ScoreManager()
         {
-            Score = 0;
+            score = 0;
         }
 
-        public void AddScore(int amount)
+        // Publieke statische methode om de enige instantie te verkrijgen
+        public static ScoreManager Instance
         {
-            Score += amount;
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ScoreManager();  // Instantie wordt voor de eerste keer aangemaakt
+                }
+                return instance;
+            }
+        }
+
+        // Methodes om de score te beheren
+        public void AddPoints(int points)
+        {
+            score += points;
+        }
+
+        public int GetScore()
+        {
+            return score;
+        }
+
+        public void Reset()
+        {
+            score = 0;
         }
     }
 }
